@@ -7,10 +7,11 @@ import { useState, type FormEvent, type ChangeEvent } from 'react'
 //hit enter to search (done with form tags, but try to manually do it with key down)
 //suggestions while typing
 function Pokemon() {
+  // prefer undefined for optional values (e.g. React props); use null only when modeling real "nothing" (like from APIs)
   const [query, setQuery] = useState<string>('');
-  const [spriteUrl, setSpriteUrl] = useState<string | null>(null) //init as null 
+  const [spriteUrl, setSpriteUrl] = useState<string | undefined>(undefined); //init as undefined not null (src prop expects it)
 
-  const getPokemon = async (input: string): Promise<string | null> => {
+  const getPokemon = async (input: string): Promise<string | undefined> => { //change to undefined from null as well
     const url = `https://pokeapi.co/api/v2/pokemon/${input.toLowerCase()}/`;
     try {
       const response = await fetch(url);
@@ -20,11 +21,11 @@ function Pokemon() {
       //check for errors first before parsing json from apis
       const parsed = await response.json();
       const sprite = parsed.sprites.front_default;
-      console.log(sprite)
+      console.log(sprite);
       return sprite;
     } catch (e) {
       console.error(e);
-      return null;
+      return undefined;
     }
   }
 
@@ -59,7 +60,8 @@ function Pokemon() {
         <div
           id='imageDiv'
         >
-          <img src={spriteUrl} />
+          {/* render img element only when spriteUrl exists */}
+          {spriteUrl && <img src={spriteUrl} />}
         </div>
       </div>
     </>

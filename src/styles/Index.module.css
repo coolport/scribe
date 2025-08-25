@@ -5,11 +5,15 @@
 
 .left {
   flex: 1;
-  background-color: #white;
+  background-color: white;
 }
 
 .right {
   flex: 1;
-  background-color: white;
+  background-color: lightblue;
   padding: 20px;
+}
+
+.rightTextContainer {
+  background-color: grey;
 }

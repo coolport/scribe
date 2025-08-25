@@ -1,5 +1,6 @@
 import { useState, type ChangeEvent, type FormEvent } from 'react';
 import styles from './styles/Index.module.css'
+import Player from './Player';
 
 //TODO: 
 //Today: YIPA, no validation, etc. yet, just get it to show
@@ -39,11 +40,21 @@ function Index() {
             >Enter</button>
           </form>
           <p>for now</p> <br />
+          <div id="playerContainer">
+            <Player></Player>
+          </div>
         </div>
+
+
         <div className={styles.right}>
-          right side
+          Write your notes below..
+          <div
+            className={styles.rightTextContainer}
+          >
+            hi
+          </div>
         </div>
-      </div>
+      </div >
     </>
   )
 }

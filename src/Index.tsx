@@ -3,55 +3,63 @@ import styles from './styles/Index.module.css'
 import Player from './Player';
 
 //TODO: 
-//Today: YIPA, no validation, etc. yet, just get it to show
-//Tom: Validation, etc.
+//Validation, etc.
+//Loading screens (player mounting etc)
+//FIX: 
+//Check if player is loaded/has video (clicking submit while playing etc)
+
 
 function Index() {
+  const [formValue, setFormValue] = useState<string | null>(null);
   const [url, setUrl] = useState<string | null>(null);
 
   const handleSubmit = (): void => {
-    console.log("URL VALUE b4 clear: ", url);
-    setUrl('');
+    setUrl(formValue);
+    console.log("URL VALUE b4 clear: ", formValue);
+    setFormValue('');
     console.log("Submitted Form");
   }
 
   return (
     <>
-      <div className={styles.container}>
+      <div className={styles.mainContainer}>
         <div className={styles.left}>
 
           <p>Enter YouTube Link</p>
           <form
-            onSubmit={(e: FormEvent<HTMLFormElement>) => {
+            onSubmit={(e: FormEvent<HTMLFormElement>): void => {
               e.preventDefault();
               handleSubmit();
             }}
           >
             <input
-              value={url ?? ''}
+              value={formValue ?? ''}
               onChange={(e: ChangeEvent<HTMLInputElement>): void => {
                 const inputValue = e.target.value;
-                setUrl(inputValue);
-                console.log(url);
+                setFormValue(inputValue);
+                console.log(formValue);
               }}
             />
             <button
               type='submit'
             >Enter</button>
           </form>
-          <p>for now</p> <br />
           <div id="playerContainer">
-            <Player></Player>
+            {/* HXU5Rxc3vBQ */}
+            {/* <Player url={"HXU5Rxc3vBQ"}></Player> */}
+            <Player videoId={url} ></Player>
           </div>
         </div>
 
 
         <div className={styles.right}>
-          Write your notes below..
+          <h3>Notes</h3>
           <div
             className={styles.rightTextContainer}
           >
-            hi
+            Placeholder
+            HXU5Rxc3vBQ
+            yfrbeCFQ65w
           </div>
         </div>
       </div >

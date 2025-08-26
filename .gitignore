@@ -1,3 +1,5 @@
+*.md
+*.vim
 # Logs
 logs
 *.log

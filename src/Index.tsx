@@ -1,6 +1,7 @@
 import { useState, type ChangeEvent, type FormEvent } from 'react';
 import styles from './styles/Index.module.css'
 import Player from './Player';
+import ChatBox from './ChatBox';
 
 //TODO: 
 //Validation, etc.
@@ -45,22 +46,23 @@ function Index() {
             >Enter</button>
           </form>
           <div id="playerContainer">
-            {/* HXU5Rxc3vBQ */}
-            {/* <Player url={"HXU5Rxc3vBQ"}></Player> */}
             <Player videoId={url} ></Player>
           </div>
         </div>
 
-
         <div className={styles.right}>
-          <h3>Notes</h3>
-          <div
-            className={styles.rightTextContainer}
-          >
-            Placeholder
+          <h3>Notes
             HXU5Rxc3vBQ
             yfrbeCFQ65w
+          </h3>
+
+          {/* <div className={styles.rightTextContainer} > */}
+          {/*   <ChatBox /> */}
+          {/* </div> */}
+          <div>
+            <ChatBox />
           </div>
+
         </div>
       </div >
     </>

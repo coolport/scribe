@@ -1,1 +1,2 @@
-# asdf1
+# W.I.P. YouTube notetaking app frontend
+

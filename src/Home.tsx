@@ -15,7 +15,7 @@ function Home() {
   const [url, setUrl] = useState<string | null>(null);
 
   const handleSubmit = (): void => {
-    const finalUrl = extractYouTubeDetails(formValue);
+    const finalUrl = extractYouTubeDetails(formValue || '');
     console.log("Parsed URL: ", finalUrl);
     setUrl(finalUrl);
     setFormValue('');

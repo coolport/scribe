@@ -1,4 +1,4 @@
-function extractYouTubeDetails(urlString): string | null {
+function extractYouTubeDetails(urlString: string): string | null {
   try {
     const url = new URL(urlString);
     const hostname = url.hostname.toLowerCase();

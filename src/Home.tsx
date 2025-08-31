@@ -2,6 +2,7 @@ import { useState, type ChangeEvent, type FormEvent } from 'react';
 import styles from './styles/Home.module.css'
 import Player from './Player';
 import ChatBox from './ChatBox';
+import extractYouTubeDetails from './styles/utils/extract-id';
 
 //TODO: 
 //Validation, etc.
@@ -14,8 +15,9 @@ function Home() {
   const [url, setUrl] = useState<string | null>(null);
 
   const handleSubmit = (): void => {
-    setUrl(formValue);
-    console.log("URL VALUE b4 clear: ", formValue);
+    const finalUrl = extractYouTubeDetails(formValue);
+    console.log("Parsed URL: ", finalUrl);
+    setUrl(finalUrl);
     setFormValue('');
     console.log("Submitted Form");
   }

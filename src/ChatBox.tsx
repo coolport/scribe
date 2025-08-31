@@ -13,6 +13,13 @@ function MyChatBox() {
     console.log(notes)
   }
 
+  const handleDelete = (id: Note['id']): void => {
+    console.log(id);
+    setNotes(
+      notes.filter((note: Note) => note.id !== id)
+    )
+  }
+
   const handleSubmit = (): void => {
     // if (userNoteString.trim() === '') return;
     if (userNoteString) {
@@ -34,9 +41,16 @@ function MyChatBox() {
   }
 
   const listMap = notes.map(note => <li>
-    <div>
+    <div
+      key={note.id}
+    >
       {note.content}
-      <button>Delete</button>
+      <button
+        onClick={(): void => {
+          handleDelete(note.id)
+        }}
+      >Delete</button>
+
     </div>
   </li>)
 

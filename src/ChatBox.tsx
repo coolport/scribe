@@ -1,4 +1,5 @@
 import { useState, type ChangeEvent, type FormEvent } from "react";
+import styles from './styles/ChatBox.module.css';
 
 interface Note {
   id: number;
@@ -8,10 +9,6 @@ interface Note {
 function MyChatBox() {
   const [notes, setNotes] = useState<Note[]>([]);
   const [userNoteString, setUserNoteString] = useState<string>('');
-
-  const testOut = (): void => {
-    console.log(notes)
-  }
 
   const handleDelete = (id: Note['id']): void => {
     console.log(id);
@@ -57,12 +54,7 @@ function MyChatBox() {
   return (
     <>
       <div>
-        <ul>
-          {listMap}
-        </ul>
-      </div>
-      <div>
-        MyNotes
+        Enter new note
         <form
           onSubmit={(e: FormEvent<HTMLFormElement>): void => {
             e.preventDefault();
@@ -70,6 +62,7 @@ function MyChatBox() {
           }}
         >
           <textarea
+            className={styles.textarea}
             value={userNoteString}
             placeholder="Enter note"
             onChange={(e: ChangeEvent<HTMLTextAreaElement>): void => {
@@ -79,16 +72,15 @@ function MyChatBox() {
             }}
           ></textarea>
           <button
+            className={styles.button}
             type="submit"
           >Submit</button>
         </form>
       </div>
-      <div>
-        <button
-          onClick={testOut}
-
-
-        >log notes[]</button>
+      <div className={styles.cardsContainer}>
+        <ul>
+          {listMap}
+        </ul>
       </div>
     </>
 

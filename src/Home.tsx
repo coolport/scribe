@@ -52,16 +52,16 @@ function Home() {
         </div>
 
         <div className={styles.right}>
-          <h3>Notes
-            HXU5Rxc3vBQ
-            yfrbeCFQ65w
-          </h3>
+          {/* <h3>Notes */}
+          {/*   HXU5Rxc3vBQ */}
+          {/*   yfrbeCFQ65w */}
+          {/* </h3> */}
 
           {/* <div className={styles.rightTextContainer} > */}
           {/*   <ChatBox /> */}
           {/* </div> */}
           <div>
-            <div className={styles.loader}></div>
+            {/* <div className={styles.loader}></div> */}
             <ChatBox />
           </div>
 

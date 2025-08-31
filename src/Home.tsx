@@ -1,5 +1,5 @@
 import { useState, type ChangeEvent, type FormEvent } from 'react';
-import styles from './styles/Index.module.css'
+import styles from './styles/Home.module.css'
 import Player from './Player';
 import ChatBox from './ChatBox';
 
@@ -10,9 +10,10 @@ import ChatBox from './ChatBox';
 //Check if player is loaded/has video (clicking submit while playing etc)
 
 
-function Index() {
+function Home() {
   const [formValue, setFormValue] = useState<string | null>(null);
   const [url, setUrl] = useState<string | null>(null);
+  const [loading, setLoading] = useState<boolean>(false);
 
   const handleSubmit = (): void => {
     setUrl(formValue);
@@ -60,6 +61,7 @@ function Index() {
           {/*   <ChatBox /> */}
           {/* </div> */}
           <div>
+            <div className={styles.loader}></div>
             <ChatBox />
           </div>
 
@@ -68,4 +70,4 @@ function Index() {
     </>
   )
 }
-export default Index;
+export default Home;

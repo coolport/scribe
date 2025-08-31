@@ -67,7 +67,6 @@ function Player({ videoId, onReady }: PlayerProps) {
       : <p>Enter a link to begin taking notes.</p>
     }
 
-    {/* TODO:  load components only when player has mounted */}
     {isReady && <button onClick={getTimeStamp}>GetTimestamp</button>}
   </>
 }

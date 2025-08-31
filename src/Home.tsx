@@ -5,7 +5,6 @@ import ChatBox from './ChatBox';
 
 //TODO: 
 //Validation, etc.
-//Loading screens (player mounting etc)
 //FIX: 
 //Check if player is loaded/has video (clicking submit while playing etc)
 
@@ -13,7 +12,6 @@ import ChatBox from './ChatBox';
 function Home() {
   const [formValue, setFormValue] = useState<string | null>(null);
   const [url, setUrl] = useState<string | null>(null);
-  const [loading, setLoading] = useState<boolean>(false);
 
   const handleSubmit = (): void => {
     setUrl(formValue);

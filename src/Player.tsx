@@ -1,17 +1,15 @@
-import { useRef, useEffect, useState } from "react";
+// Biggest thing learned here is refs p much
+import { useEffect, useState, forwardRef } from "react";
 import YouTube, { type YouTubeProps } from "react-youtube";
 import styles from './styles/Player.module.css'
 
-// Import destructured type YouTubeProps from the pkg. AVOID redefining - it's the point of the pkg.
-// we still construct a type PlayerProps with YouTubeProps[] bc 
 type PlayerProps = {
   videoId: string | null;
   onReady?: YouTubeProps['onReady'];
   opts?: YouTubeProps['opts'];
 }
 
-function Player({ videoId, onReady }: PlayerProps) {
-  const playerRef = useRef<any>(null); // For youtube player instance
+const Player = forwardRef<any, PlayerProps>(({ videoId, onReady, opts }, ref) => {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [isReady, setIsReady] = useState<boolean>(false);
 
@@ -22,37 +20,41 @@ function Player({ videoId, onReady }: PlayerProps) {
     }
   }, [videoId])
 
-  const opts: YouTubeProps['opts'] = {
-    height: '390',
-    width: '640',
+  const defaultOpts: YouTubeProps['opts'] = {
+    height: 720,
+    width: 1280,
     playerVars: { // https://developers.google.com/youtube/player_parameters
       autoplay: 1,
     },
   };
 
-  const onPlayerReady: PlayerProps['onReady'] = (event): void => {
-    // Assignemnt here because assign to ref only when it's mounted
-    playerRef.current = event.target;
+  const onPlayerReady: YouTubeProps['onReady'] = (event) => {
+    if (ref && 'current' in ref) {
+      ref.current = event.target;
+    } else if (typeof ref === 'function') {
+      ref(event.target);
+    }
 
     setIsLoading(false);
     setIsReady(true);
 
-    // For the parent component to pass its own func through the onReady prop
     if (onReady) {
       onReady(event);
     }
-
-    // access to player in all event handlers via event.target under onReady
-
-    // using ref vs event methods.. idk
-    // event.target.pauseVideo();
-    // playerRef.current.playVideo();  
   }
 
   const getTimeStamp = (): void => {
-    if (!playerRef.current) return;
-    const time = playerRef.current.getCurrentTime();
-    console.log("TIMESTAMP(s): ", time);
+    if (ref && 'current' in ref && ref.current) {
+      const time = ref.current.getCurrentTime();
+      console.log("TIMESTAMP(s): ", time);
+    }
+  }
+
+  const seekToTime = (): void => {
+    if (ref && 'current' in ref && ref.current) {
+      const time = ref.current.seekTo(4, true)
+      console.log("TIMESTAMP(s): ", time);
+    }
   }
 
   return <>
@@ -61,14 +63,15 @@ function Player({ videoId, onReady }: PlayerProps) {
         {isLoading && <div className={styles.loader}></div>}
         <YouTube
           videoId={videoId}
-          opts={opts}
+          opts={opts || defaultOpts}
           onReady={onPlayerReady} />
       </>
       : <p>Enter a link to begin taking notes.</p>
     }
 
     {isReady && <button onClick={getTimeStamp}>GetTimestamp</button>}
+    {isReady && <button onClick={seekToTime}>Seek</button>}
   </>
-}
+});
 
 export default Player;

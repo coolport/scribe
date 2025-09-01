@@ -1,18 +1,13 @@
-import { useState, type ChangeEvent, type FormEvent } from 'react';
+import { useState, type ChangeEvent, type FormEvent, useRef } from 'react';
 import styles from './styles/Home.module.css'
 import Player from './Player';
 import ChatBox from './ChatBox';
-import extractYouTubeDetails from './styles/utils/extract-id';
-
-//TODO: 
-//Validation, etc.
-//FIX: 
-//Check if player is loaded/has video (clicking submit while playing etc)
-
+import extractYouTubeDetails from './utils/extract-id';
 
 function Home() {
   const [formValue, setFormValue] = useState<string | null>(null);
   const [url, setUrl] = useState<string | null>(null);
+  const playerRef = useRef<any>(null);
 
   const handleSubmit = (): void => {
     const finalUrl = extractYouTubeDetails(formValue || '');
@@ -39,7 +34,6 @@ function Home() {
               onChange={(e: ChangeEvent<HTMLInputElement>): void => {
                 const inputValue = e.target.value;
                 setFormValue(inputValue);
-                console.log(formValue);
               }}
             />
             <button
@@ -47,22 +41,13 @@ function Home() {
             >Enter</button>
           </form>
           <div id="playerContainer">
-            <Player videoId={url} ></Player>
+            <Player videoId={url} ref={playerRef}></Player>
           </div>
         </div>
 
         <div className={styles.right}>
-          {/* <h3>Notes */}
-          {/*   HXU5Rxc3vBQ */}
-          {/*   yfrbeCFQ65w */}
-          {/* </h3> */}
-
-          {/* <div className={styles.rightTextContainer} > */}
-          {/*   <ChatBox /> */}
-          {/* </div> */}
           <div>
-            {/* <div className={styles.loader}></div> */}
-            <ChatBox />
+            <ChatBox playerRef={playerRef} />
           </div>
 
         </div>

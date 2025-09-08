@@ -1,4 +1,4 @@
-import { useState, type ChangeEvent, useEffect } from 'react';
+import { useState, type ChangeEvent, type KeyboardEvent, useEffect } from 'react';
 import styles from './styles/Home.module.css'
 import extractYouTubeDetails from './utils/extract-id';
 import { useNavigate } from 'react-router';
@@ -25,7 +25,7 @@ function Landing() {
     }
   }, [navigate, url])
 
-  const handleKeyDown = (e): void => {
+  const handleKeyDown = (e: KeyboardEvent<HTMLInputElement>): void => {
     if (e.key === 'Enter' && !e.shiftKey) {
       e.preventDefault();
       console.log("Enter pressed.")
@@ -38,7 +38,7 @@ function Landing() {
       <div className={styles.left}>
 
         <p>Enter YouTube Link</p>
-        <form onKeyDown={handleKeyDown} >
+        <form >
           <input
             value={formValue ?? ''}
             onChange={(e: ChangeEvent<HTMLInputElement>): void => {
@@ -46,6 +46,7 @@ function Landing() {
               setFormValue(inputValue);
               console.log(inputValue)
             }}
+            onKeyDown={handleKeyDown}
           />
         </form>
       </div>

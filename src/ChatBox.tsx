@@ -16,10 +16,6 @@ function ChatBox({ playerRef }: ChatBoxProps) {
   const [notes, setNotes] = useState<Note[]>([]);
   const [userNoteString, setUserNoteString] = useState<string>('');
 
-  const handleCardButton = (timestamp: Note['timestamp']): void => {
-    console.log(timestamp)
-  }
-
   const handleDelete = (id: Note['id']): void => {
     console.log(id);
     setNotes(

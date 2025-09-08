@@ -1,4 +1,4 @@
-import { useState, type ChangeEvent, type FormEvent, useRef, useEffect } from 'react';
+import { useState, type ChangeEvent, useEffect } from 'react';
 import styles from './styles/Home.module.css'
 import extractYouTubeDetails from './utils/extract-id';
 import { useNavigate } from 'react-router';

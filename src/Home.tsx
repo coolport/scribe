@@ -28,24 +28,6 @@ function Home() {
       <div className={styles.mainContainer}>
         <div className={styles.left}>
 
-          <p>Enter YouTube Link</p>
-          <form
-            onSubmit={(e: FormEvent<HTMLFormElement>): void => {
-              e.preventDefault();
-              handleSubmit();
-            }}
-          >
-            <input
-              value={formValue ?? ''}
-              onChange={(e: ChangeEvent<HTMLInputElement>): void => {
-                const inputValue = e.target.value;
-                setFormValue(inputValue);
-              }}
-            />
-            <button
-              type='submit'
-            >Enter</button>
-          </form>
           <div id="playerContainer">
             <Player videoId={vidUrl} ref={playerRef}></Player>
           </div>

@@ -1,4 +1,4 @@
-import { useState, type ChangeEvent, type FormEvent, useRef } from 'react';
+import { useState, type ChangeEvent, type FormEvent, useRef, useEffect } from 'react';
 import styles from './styles/Home.module.css'
 import extractYouTubeDetails from './utils/extract-id';
 import { useNavigate } from 'react-router';
@@ -6,19 +6,29 @@ import { useNavigate } from 'react-router';
 function Landing() {
   const [url, setUrl] = useState<string | null>(null);
   const [formValue, setFormValue] = useState<string | null>(null);
-  const playerRef = useRef<any>(null);
+  // const playerRef = useRef<any>(null);
+
+  const navigate = useNavigate();
 
   const handleSubmit = (): void => {
     const finalUrl = extractYouTubeDetails(formValue || '');
     console.log("Parsed URL: ", finalUrl);
     setUrl(finalUrl);
-    setFormValue('');
-    console.log("Submitted Form");
   }
+
+  // Better handling
+  useEffect(() => {
+    if (url) {
+      navigate("/home", {
+        state: { url }
+      })
+    }
+  }, [navigate, url])
 
   const handleKeyDown = (e): void => {
     if (e.key === 'Enter' && !e.shiftKey) {
       e.preventDefault();
+      console.log("Enter pressed.")
       handleSubmit();
     }
   };
@@ -34,6 +44,7 @@ function Landing() {
             onChange={(e: ChangeEvent<HTMLInputElement>): void => {
               const inputValue = e.target.value;
               setFormValue(inputValue);
+              console.log(inputValue)
             }}
           />
         </form>

@@ -1,6 +1,7 @@
 import { useState, type ChangeEvent, type FormEvent, type RefObject, type KeyboardEvent } from "react";
 import styles from './styles/ChatBox.module.css';
 import formatTime from "./utils/format-time";
+import { Textarea } from "@/components/ui/textarea"
 
 interface Note {
   id: number;
@@ -58,8 +59,9 @@ function ChatBox({ playerRef }: ChatBoxProps) {
         <div>
           <span>[{formatTime(note.timestamp)}]</span> {note.content}
           <button
-            onClick={(): void => {
-              handleDelete(note.id)
+            onClick={(e): void => {
+              e.stopPropagation();
+              handleDelete(note.id);
             }}
           >Delete</button>
         </div>
@@ -78,8 +80,8 @@ function ChatBox({ playerRef }: ChatBoxProps) {
             handleSubmit();
           }}
         >
-          <textarea
-            className={styles.textarea}
+          <Textarea
+            className="align-middle"
             value={userNoteString}
             placeholder="Enter new note"
             onChange={(e: ChangeEvent<HTMLTextAreaElement>): void => {
@@ -87,11 +89,7 @@ function ChatBox({ playerRef }: ChatBoxProps) {
               setUserNoteString(value);
             }}
             onKeyDown={handleKeyDown}
-          ></textarea>
-          {/* <button */}
-          {/*   className={styles.button} */}
-          {/*   type="submit" */}
-          {/* >Submit</button> */}
+          ></Textarea>
         </form>
       </div>
       <div className={styles.cardsContainer}>

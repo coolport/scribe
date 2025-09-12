@@ -68,9 +68,6 @@ const Player = forwardRef<any, PlayerProps>(({ videoId, onReady, opts }, ref) =>
       </>
       : <p>Enter a link to begin taking notes.</p>
     }
-
-    {isReady && <button onClick={getTimeStamp}>GetTimestamp</button>}
-    {isReady && <button onClick={seekToTime}>Seek</button>}
   </>
 });
 

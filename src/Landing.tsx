@@ -1,5 +1,4 @@
 import { useState, type ChangeEvent, type KeyboardEvent, useEffect } from 'react';
-import styles from './styles/Home.module.css'
 import extractYouTubeDetails from './utils/extract-id';
 import { useNavigate } from 'react-router';
 import { Input } from '@/components/ui/input';
@@ -36,8 +35,7 @@ function Landing() {
 
   return (
     <>
-      <div className={styles.left}>
-
+      <div>
         <p className='align-middle'>Enter YouTube Link</p>
         <form >
           <Input

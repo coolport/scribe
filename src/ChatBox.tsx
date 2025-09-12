@@ -1,5 +1,4 @@
 import { useState, type ChangeEvent, type FormEvent, type RefObject, type KeyboardEvent } from "react";
-import styles from './styles/ChatBox.module.css';
 import formatTime from "./utils/format-time";
 import { Textarea } from "@/components/ui/textarea"
 import { Card } from "./components/ui/card";
@@ -39,6 +38,7 @@ function ChatBox({ playerRef }: ChatBoxProps) {
     }
   }
 
+
   const seekToTime = (time: Note['timestamp']): void => {
     playerRef.current.seekTo(time, true);
   }
@@ -52,28 +52,23 @@ function ChatBox({ playerRef }: ChatBoxProps) {
 
 
   const listMap = notes.map(note => (
-    <button className={styles.cardNote} onClick={(): void => {
-      // handleCardButton(note.timestamp);
-      seekToTime(note.timestamp);
-    }}>
-      <li key={note.id}>
-        <div>
-          <span>[{formatTime(note.timestamp)}]</span> {note.content}
-          <button
-            onClick={(e): void => {
-              e.stopPropagation();
-              handleDelete(note.id);
-            }}
-          >Delete</button>
-        </div>
-      </li>
-    </button >
+    <li key={note.id} onClick={(): void => { seekToTime(note.timestamp); }}>
+      <div>
+        <span>[{formatTime(note.timestamp)}]</span> {note.content}
+        <button
+          onClick={(e): void => {
+            e.stopPropagation();
+            handleDelete(note.id);
+          }}
+        >Delete</button>
+      </div>
+    </li >
   ));
 
 
   return (
     <>
-      <div className={styles.chatBoxContainer}>
+      <div >
         Notes
         <form
           onSubmit={(e: FormEvent<HTMLFormElement>): void => {
@@ -93,8 +88,8 @@ function ChatBox({ playerRef }: ChatBoxProps) {
           ></Textarea>
         </form>
       </div>
-      <div className={styles.cardsContainer}>
-        <ul className={styles.notesListContainer}>
+      <div >
+        <ul>
           {listMap}
         </ul>
         <Card></Card>

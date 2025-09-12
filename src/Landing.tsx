@@ -17,12 +17,12 @@ function Landing() {
     setUrl(finalUrl);
   }
 
-  // Better handling
   useEffect(() => {
     if (url) {
-      navigate("/home", {
-        state: { url }
-      })
+      // navigate("/home", {
+      //   state: { url }
+      // })
+      navigate(`/${url}`)
     }
   }, [navigate, url])
 

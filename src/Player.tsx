@@ -1,7 +1,6 @@
 // Biggest thing learned here is refs p much
 import { useEffect, useState, forwardRef } from "react";
 import YouTube, { type YouTubeProps } from "react-youtube";
-import styles from './styles/Player.module.css'
 
 type PlayerProps = {
   videoId: string | null;
@@ -46,7 +45,9 @@ const Player = forwardRef<any, PlayerProps>(({ videoId, onReady, opts }, ref) =>
   return <>
     {videoId ?
       <>
-        {isLoading && <div className={styles.loader}></div>}
+        {isLoading &&
+          <div class="w-10 h-10 border-4 border-t-blue-500 border-gray-300 rounded-full animate-spin" />
+        }
         <YouTube
           videoId={videoId}
           opts={opts || defaultOpts}

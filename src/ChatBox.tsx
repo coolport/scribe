@@ -2,6 +2,7 @@ import { useState, type ChangeEvent, type FormEvent, type RefObject, type Keyboa
 import styles from './styles/ChatBox.module.css';
 import formatTime from "./utils/format-time";
 import { Textarea } from "@/components/ui/textarea"
+import { Card } from "./components/ui/card";
 
 interface Note {
   id: number;
@@ -96,6 +97,7 @@ function ChatBox({ playerRef }: ChatBoxProps) {
         <ul className={styles.notesListContainer}>
           {listMap}
         </ul>
+        <Card></Card>
       </div>
     </>
 

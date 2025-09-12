@@ -11,12 +11,12 @@ type PlayerProps = {
 
 const Player = forwardRef<any, PlayerProps>(({ videoId, onReady, opts }, ref) => {
   const [isLoading, setIsLoading] = useState<boolean>(false);
-  const [isReady, setIsReady] = useState<boolean>(false);
+  // const [isReady, setIsReady] = useState<boolean>(false);
 
   useEffect(() => {
     if (videoId) {
       setIsLoading(true);
-      setIsReady(false);
+      // setIsReady(false);
     }
   }, [videoId])
 
@@ -36,24 +36,10 @@ const Player = forwardRef<any, PlayerProps>(({ videoId, onReady, opts }, ref) =>
     }
 
     setIsLoading(false);
-    setIsReady(true);
+    // setIsReady(true);
 
     if (onReady) {
       onReady(event);
-    }
-  }
-
-  const getTimeStamp = (): void => {
-    if (ref && 'current' in ref && ref.current) {
-      const time = ref.current.getCurrentTime();
-      console.log("TIMESTAMP(s): ", time);
-    }
-  }
-
-  const seekToTime = (): void => {
-    if (ref && 'current' in ref && ref.current) {
-      const time = ref.current.seekTo(4, true)
-      console.log("TIMESTAMP(s): ", time);
     }
   }
 
@@ -66,7 +52,7 @@ const Player = forwardRef<any, PlayerProps>(({ videoId, onReady, opts }, ref) =>
           opts={opts || defaultOpts}
           onReady={onPlayerReady} />
       </>
-      : <p>Enter a link to begin taking notes.</p>
+      : <p>Error loading video.</p>
     }
   </>
 });

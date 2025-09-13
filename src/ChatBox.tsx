@@ -59,9 +59,9 @@ function ChatBox({ playerRef }: ChatBoxProps) {
     }
   }
 
-  const handleDelete = async (id: Note['id']): void => {
+  const handleDelete = async (id: Note['id']): Promise<void> => {
     console.log(id);
-    await noteService.deleteNote(id);
+    await noteService.deleteNote(id!);
   }
 
   const seekToTime = (time: Note['timestamp']): void => {

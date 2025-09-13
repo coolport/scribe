@@ -1,4 +1,4 @@
-import { useState, type ChangeEvent, type FormEvent, type RefObject, type KeyboardEvent } from "react";
+import { useEffect, useState, type ChangeEvent, type FormEvent, type RefObject, type KeyboardEvent } from "react";
 import formatTime from "./utils/format-time";
 import { Textarea } from "@/components/ui/textarea"
 import {
@@ -8,12 +8,8 @@ import {
   CardHeader,
 } from "./components/ui/card";
 import noteService from "./services/noteService";
-
-interface Note {
-  id: number;
-  content: string;
-  timestamp: number;
-}
+import { type Note } from "./services/noteContract";
+import { useParams } from "react-router";
 
 interface ChatBoxProps {
   playerRef: RefObject<any>;
@@ -23,27 +19,50 @@ function ChatBox({ playerRef }: ChatBoxProps) {
   const [notes, setNotes] = useState<Note[]>([]);
   const [userNoteString, setUserNoteString] = useState<string>('');
 
-  const handleDelete = (id: Note['id']): void => {
-    console.log(id);
-    setNotes(
-      notes.filter((note: Note) => note.id !== id)
-    )
-  }
+  const params = useParams();
+  const vidId = params.videoUrl || '';
 
-  const handleSubmit = (): void => {
+  //
+  // const handleSubmit = (): void => {
+  //   if (userNoteString.trim()) {
+  //     const currentTime = playerRef.current ? playerRef.current.getCurrentTime() : 0;
+  //     setNotes(prev => [...prev, {
+  //       id: Date.now(),
+  //       content: userNoteString,
+  //       timestamp: currentTime,
+  //     }]);
+  //     setUserNoteString('');
+  //   } else {
+  //     console.log("Empty string.");
+  //   }
+  // }
+
+  useEffect(() => {
+    const getta = async () => {
+      const lilist = await noteService.getNotes(vidId)
+      setNotes(lilist);
+    }
+    getta();
+  }, [vidId, notes])
+
+  const handleSubmit = async () => {
     if (userNoteString.trim()) {
       const currentTime = playerRef.current ? playerRef.current.getCurrentTime() : 0;
-      setNotes(prev => [...prev, {
-        id: Date.now(),
+      await noteService.addNote({
+        videoId: vidId,
         content: userNoteString,
         timestamp: currentTime,
-      }]);
+      });
       setUserNoteString('');
     } else {
-      console.log("Empty string.");
+      console.log("Empty String");
     }
   }
 
+  const handleDelete = async (id: Note['id']): void => {
+    console.log(id);
+    await noteService.deleteNote(id);
+  }
 
   const seekToTime = (time: Note['timestamp']): void => {
     playerRef.current.seekTo(time, true);
@@ -56,18 +75,23 @@ function ChatBox({ playerRef }: ChatBoxProps) {
     }
   };
 
+
   const listMap = notes.map(note => (
     <li key={note.id} onClick={(): void => { seekToTime(note.timestamp); }}>
       <Card>
         <CardHeader>
           <span>[{formatTime(note.timestamp)}]</span>
           <CardAction>
-            <button
-              onClick={(e): void => {
-                e.stopPropagation();
-                handleDelete(note.id);
-              }}
-            >Delete</button>
+            <div>
+              <button>Edit</button>
+              <button
+                onClick={(e): void => {
+                  e.stopPropagation();
+                  handleDelete(note.id);
+                  // noteService.deleteNote(note.id)
+                }}
+              >Delete</button>
+            </div>
           </CardAction>
         </CardHeader>
         <CardContent>

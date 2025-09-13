@@ -1,7 +1,13 @@
 import { useState, type ChangeEvent, type FormEvent, type RefObject, type KeyboardEvent } from "react";
 import formatTime from "./utils/format-time";
 import { Textarea } from "@/components/ui/textarea"
-import { Card } from "./components/ui/card";
+import {
+  Card,
+  CardAction,
+  CardContent,
+  CardHeader,
+} from "./components/ui/card";
+import noteService from "./services/noteService";
 
 interface Note {
   id: number;
@@ -50,25 +56,31 @@ function ChatBox({ playerRef }: ChatBoxProps) {
     }
   };
 
-
   const listMap = notes.map(note => (
     <li key={note.id} onClick={(): void => { seekToTime(note.timestamp); }}>
-      <div>
-        <span>[{formatTime(note.timestamp)}]</span> {note.content}
-        <button
-          onClick={(e): void => {
-            e.stopPropagation();
-            handleDelete(note.id);
-          }}
-        >Delete</button>
-      </div>
+      <Card>
+        <CardHeader>
+          <span>[{formatTime(note.timestamp)}]</span>
+          <CardAction>
+            <button
+              onClick={(e): void => {
+                e.stopPropagation();
+                handleDelete(note.id);
+              }}
+            >Delete</button>
+          </CardAction>
+        </CardHeader>
+        <CardContent>
+          {note.content}
+        </CardContent>
+      </Card>
     </li >
   ));
 
 
   return (
     <>
-      <div >
+      <div>
         Notes
         <form
           onSubmit={(e: FormEvent<HTMLFormElement>): void => {
@@ -92,10 +104,8 @@ function ChatBox({ playerRef }: ChatBoxProps) {
         <ul>
           {listMap}
         </ul>
-        <Card></Card>
       </div>
     </>
-
   )
 }
 

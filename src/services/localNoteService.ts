@@ -27,9 +27,13 @@ const localNoteService: NoteContract = {
     return { ...note, id: newId };
   },
 
-  updateNote: (id: number, updates: Partial<Note>) => {
-    // Dexie's update method returns the number of updated records
-    return db.notes.update(id, updates);
+  updateNote: async (id: number, updates: Partial<Note>): Promise<Note> => {
+    await db.notes.update(id, updates);
+    const updatedNote = await db.notes.get(id);
+    if (updatedNote === undefined) {
+      throw new Error(`Failed to retrieve note with id ${id} after update.`);
+    }
+    return updatedNote;
   },
 
   deleteNote: (id: number) => {

@@ -2,6 +2,7 @@ import Dexie, { type Table } from 'dexie';
 import { type NoteContract, type Note } from './noteContract';
 
 // Class-based schema definition
+// TODO: use modern way from doc
 class NoteDatabase extends Dexie {
   public notes!: Table<Note, number>;
 

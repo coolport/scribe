@@ -18,24 +18,11 @@ interface ChatBoxProps {
 function ChatBox({ playerRef }: ChatBoxProps) {
   const [notes, setNotes] = useState<Note[]>([]);
   const [userNoteString, setUserNoteString] = useState<string>('');
+  const [editingNoteId, setEditingNoteId] = useState<number | null>(null);
+  const [editingContent, setEditingContent] = useState<string>('');
 
   const params = useParams();
   const vidId = params.videoUrl || '';
-
-  //
-  // const handleSubmit = (): void => {
-  //   if (userNoteString.trim()) {
-  //     const currentTime = playerRef.current ? playerRef.current.getCurrentTime() : 0;
-  //     setNotes(prev => [...prev, {
-  //       id: Date.now(),
-  //       content: userNoteString,
-  //       timestamp: currentTime,
-  //     }]);
-  //     setUserNoteString('');
-  //   } else {
-  //     console.log("Empty string.");
-  //   }
-  // }
 
   useEffect(() => {
     const getta = async (): Promise<void> => {
@@ -79,6 +66,26 @@ function ChatBox({ playerRef }: ChatBoxProps) {
     }
   }
 
+  const handleUpdateNote = async (id: number, content: string) => {
+    try {
+      const updatedNote = await noteService.updateNote(id, { content });
+      setNotes(notes.map(note => note.id === id ? updatedNote : note));
+    } catch (error) {
+      console.error("Failed to update note:", error);
+    }
+  };
+
+  const handleEdit = (note: Note) => {
+    setEditingNoteId(note.id!);
+    setEditingContent(note.content);
+  };
+
+  const handleSave = (id: number) => {
+    handleUpdateNote(id, editingContent);
+    setEditingNoteId(null);
+    setEditingContent('');
+  };
+
   const seekToTime = (time: Note['timestamp']): void => {
     playerRef.current.seekTo(time, true);
   }
@@ -91,30 +98,56 @@ function ChatBox({ playerRef }: ChatBoxProps) {
   };
 
 
-  const listMap = notes.map(note => (
-    <li key={note.id} onClick={(): void => { seekToTime(note.timestamp); }}>
-      <Card>
-        <CardHeader>
-          <span>[{formatTime(note.timestamp)}]</span>
-          <CardAction>
-            <div>
-              <button>Edit</button>
-              <button
-                onClick={(e): void => {
-                  e.stopPropagation();
-                  handleDelete(note.id);
-                  // noteService.deleteNote(note.id)
-                }}
-              >Delete</button>
-            </div>
-          </CardAction>
-        </CardHeader>
-        <CardContent>
-          {note.content}
-        </CardContent>
-      </Card>
-    </li >
-  ));
+  const listMap = notes.map(note => {
+    const isEditing = editingNoteId === note.id;
+    return (
+      <li key={note.id} onClick={(): void => { if (!isEditing) seekToTime(note.timestamp); }}>
+        <Card>
+          <CardHeader>
+            <span>[{formatTime(note.timestamp)}]</span>
+            <CardAction>
+              {isEditing ? (
+                <div>
+                  <button onClick={(e) => {
+                    e.stopPropagation();
+                    handleSave(note.id!);
+                  }}>Save</button>
+                  <button onClick={(e) => {
+                    e.stopPropagation();
+                    setEditingNoteId(null);
+                  }}>Cancel</button>
+                </div>
+              ) : (
+                <div>
+                  <button onClick={(e) => {
+                    e.stopPropagation();
+                    handleEdit(note);
+                  }}>Edit</button>
+                  <button
+                    onClick={(e): void => {
+                      e.stopPropagation();
+                      handleDelete(note.id);
+                    }}
+                  >Delete</button>
+                </div>
+              )}
+            </CardAction>
+          </CardHeader>
+          <CardContent>
+            {isEditing ? (
+              <Textarea
+                value={editingContent}
+                onChange={(e) => setEditingContent(e.target.value)}
+                onClick={(e) => e.stopPropagation()} // Prevent card's seekToTime
+              />
+            ) : (
+              note.content
+            )}
+          </CardContent>
+        </Card>
+      </li >
+    )
+  });
 
 
   return (

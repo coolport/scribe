@@ -38,30 +38,45 @@ function ChatBox({ playerRef }: ChatBoxProps) {
   // }
 
   useEffect(() => {
-    const getta = async () => {
+    const getta = async (): Promise<void> => {
       const lilist = await noteService.getNotes(vidId)
       setNotes(lilist);
     }
     getta();
-  }, [vidId, notes])
+  }, [vidId])
 
-  const handleSubmit = async () => {
+  const handleSubmit = async (): Promise<void> => {
     if (userNoteString.trim()) {
-      const currentTime = playerRef.current ? playerRef.current.getCurrentTime() : 0;
-      await noteService.addNote({
-        videoId: vidId,
-        content: userNoteString,
-        timestamp: currentTime,
-      });
-      setUserNoteString('');
+      try {
+
+        const currentTime = playerRef.current ? playerRef.current.getCurrentTime() : 0;
+        const newNote = await noteService.addNote({
+          videoId: vidId,
+          content: userNoteString,
+          timestamp: currentTime,
+        });
+        setNotes(prev => [...prev, newNote]);
+        setUserNoteString('');
+      } catch (e) {
+        console.error("Failed: ", e);
+      }
     } else {
       console.log("Empty String");
     }
   }
 
   const handleDelete = async (id: Note['id']): Promise<void> => {
-    console.log(id);
-    await noteService.deleteNote(id!);
+    if (id === undefined) {
+      console.error("Can't delete note.");
+      return;
+    }
+    try {
+      console.log("Deleted note with ID: ", id);
+      await noteService.deleteNote(id!);
+      setNotes(notes.filter((note: Note) => note.id !== id))
+    } catch (e) {
+      console.error("Failed to delete: ", e)
+    }
   }
 
   const seekToTime = (time: Note['timestamp']): void => {

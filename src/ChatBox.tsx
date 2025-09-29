@@ -1,12 +1,7 @@
 import { useEffect, useState, type ChangeEvent, type FormEvent, type RefObject, type KeyboardEvent } from "react";
 import formatTime from "./utils/format-time";
-import { Textarea } from "@/components/ui/textarea"
-import {
-  Card,
-  CardAction,
-  CardContent,
-  CardHeader,
-} from "./components/ui/card";
+import { Textarea } from "@/components/ui/textarea";
+import { Card, CardContent, CardHeader } from "./components/ui/card";
 import noteService from "./services/noteService";
 import { type Note } from "./services/noteContract";
 import { useParams } from "react-router";
@@ -35,7 +30,6 @@ function ChatBox({ playerRef }: ChatBoxProps) {
   const handleSubmit = async (): Promise<void> => {
     if (userNoteString.trim()) {
       try {
-
         const currentTime = playerRef.current ? playerRef.current.getCurrentTime() : 0;
         const newNote = await noteService.addNote({
           videoId: vidId,
@@ -58,7 +52,6 @@ function ChatBox({ playerRef }: ChatBoxProps) {
       return;
     }
     try {
-      console.log("Deleted note with ID: ", id);
       await noteService.deleteNote(id!);
       setNotes(notes.filter((note: Note) => note.id !== id))
     } catch (e) {
@@ -97,63 +90,53 @@ function ChatBox({ playerRef }: ChatBoxProps) {
     }
   };
 
-
   const listMap = notes.map(note => {
     const isEditing = editingNoteId === note.id;
     return (
-      <li key={note.id} onClick={(): void => { if (!isEditing) seekToTime(note.timestamp); }}>
-        <Card>
-          <CardHeader>
-            <span>[{formatTime(note.timestamp)}]</span>
-            <CardAction>
+      <li key={note.id} className="mb-4" onClick={(): void => { if (!isEditing) seekToTime(note.timestamp); }}>
+        <Card className="cursor-pointer hover:bg-gray-50">
+          <CardHeader className="flex flex-row justify-between items-center p-4">
+            <span className="font-semibold text-blue-700">[{formatTime(note.timestamp)}]</span>
+            <div className="flex space-x-2">
               {isEditing ? (
-                <div>
-                  <button onClick={(e) => {
-                    e.stopPropagation();
-                    handleSave(note.id!);
-                  }}>Save</button>
-                  <button onClick={(e) => {
-                    e.stopPropagation();
-                    setEditingNoteId(null);
-                  }}>Cancel</button>
-                </div>
+                <>
+                  <button onClick={(e) => { e.stopPropagation(); handleSave(note.id!); }} className="px-3 py-1 text-sm text-white bg-blue-700 rounded-md hover:bg-blue-600">Save</button>
+                  <button onClick={(e) => { e.stopPropagation(); setEditingNoteId(null); }} className="px-3 py-1 text-sm text-gray-700 bg-gray-200 rounded-md hover:bg-gray-300">Cancel</button>
+                </>
               ) : (
-                <div>
-                  <button onClick={(e) => {
-                    e.stopPropagation();
-                    handleEdit(note);
-                  }}>Edit</button>
-                  <button
-                    onClick={(e): void => {
-                      e.stopPropagation();
-                      handleDelete(note.id);
-                    }}
-                  >Delete</button>
-                </div>
+                <>
+                  <button onClick={(e) => { e.stopPropagation(); handleEdit(note); }} className="px-3 py-1 text-sm text-gray-700 bg-gray-200 rounded-md hover:bg-gray-300">Edit</button>
+                  <button onClick={(e): void => { e.stopPropagation(); handleDelete(note.id); }} className="px-3 py-1 text-sm text-white bg-red-700 rounded-sm hover:bg-red-600">Delete</button>
+                </>
               )}
-            </CardAction>
+            </div>
           </CardHeader>
-          <CardContent>
+          <CardContent className="p-4">
             {isEditing ? (
               <Textarea
                 value={editingContent}
                 onChange={(e) => setEditingContent(e.target.value)}
-                onClick={(e) => e.stopPropagation()} // Prevent card's seekToTime
+                onClick={(e) => e.stopPropagation()}
+                className="w-full p-2 border rounded-md"
               />
             ) : (
-              note.content
+              <p className="text-gray-800">{note.content}</p>
             )}
           </CardContent>
         </Card>
-      </li >
+      </li>
     )
   });
 
-
   return (
-    <>
-      <div>
-        Notes
+    <div className="flex flex-col h-full">
+      <h2 className="text-2xl font-bold text-gray-800">Notes</h2>
+      <div className="flex-grow mt-4 overflow-y-auto">
+        <ul className="pr-4">
+          {listMap}
+        </ul>
+      </div>
+      <div className="mt-4">
         <form
           onSubmit={(e: FormEvent<HTMLFormElement>): void => {
             e.preventDefault();
@@ -161,23 +144,17 @@ function ChatBox({ playerRef }: ChatBoxProps) {
           }}
         >
           <Textarea
-            className="align-middle"
+            className="w-full p-2 border rounded-md"
             value={userNoteString}
-            placeholder="Enter new note"
+            placeholder="Enter new note..."
             onChange={(e: ChangeEvent<HTMLTextAreaElement>): void => {
-              const value = e.target.value;
-              setUserNoteString(value);
+              setUserNoteString(e.target.value);
             }}
             onKeyDown={handleKeyDown}
-          ></Textarea>
+          />
         </form>
       </div>
-      <div >
-        <ul>
-          {listMap}
-        </ul>
-      </div>
-    </>
+    </div>
   )
 }
 

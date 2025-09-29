@@ -6,8 +6,6 @@ import { Input } from '@/components/ui/input';
 function Landing() {
   const [url, setUrl] = useState<string | null>(null);
   const [formValue, setFormValue] = useState<string | null>(null);
-  // const playerRef = useRef<any>(null);
-
   const navigate = useNavigate();
 
   const handleSubmit = (): void => {
@@ -18,9 +16,6 @@ function Landing() {
 
   useEffect(() => {
     if (url) {
-      // navigate("/home", {
-      //   state: { url }
-      // })
       navigate(`/${url}`)
     }
   }, [navigate, url])
@@ -28,29 +23,36 @@ function Landing() {
   const handleKeyDown = (e: KeyboardEvent<HTMLInputElement>): void => {
     if (e.key === 'Enter' && !e.shiftKey) {
       e.preventDefault();
-      console.log("Enter pressed.")
       handleSubmit();
     }
   };
 
   return (
-    <>
-      <div>
-        <p className='align-middle'>Enter YouTube Link</p>
-        <form >
+    <div className="flex flex-col items-center justify-center h-screen bg-gray-100">
+      <div className="text-center">
+        <h1 className="text-6xl font-bold text-gray-800">Scribe</h1>
+        <p className="mt-2 text-lg text-gray-600">Your YouTube Note-Taker</p>
+      </div>
+      <div className="w-full max-w-md mt-8">
+        <form
+          onSubmit={(e) => {
+            e.preventDefault();
+            handleSubmit();
+          }}
+        >
           <Input
-            className="rounded-full"
+            className="w-full px-4 py-3 text-lg text-center text-gray-700 bg-white border border-gray-300 rounded-full focus:outline-none focus:ring-2 focus:ring-blue-500"
+            placeholder="Paste your YouTube link here"
             value={formValue ?? ''}
             onChange={(e: ChangeEvent<HTMLInputElement>): void => {
               const inputValue = e.target.value;
               setFormValue(inputValue);
-              console.log(inputValue)
             }}
             onKeyDown={handleKeyDown}
           />
         </form>
       </div>
-    </>
+    </div>
   )
 }
 

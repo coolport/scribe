@@ -1,5 +1,6 @@
 import { useEffect, useState, type ChangeEvent, type FormEvent, type RefObject, type KeyboardEvent } from "react";
 import formatTime from "./utils/format-time";
+import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent, CardHeader } from "./components/ui/card";
 import noteService from "./services/noteService";
@@ -94,19 +95,19 @@ function ChatBox({ playerRef }: ChatBoxProps) {
     const isEditing = editingNoteId === note.id;
     return (
       <li key={note.id} className="mb-4" onClick={(): void => { if (!isEditing) seekToTime(note.timestamp); }}>
-        <Card className="cursor-pointer hover:bg-gray-50">
+        <Card className="cursor-pointer hover:bg-accent">
           <CardHeader className="flex flex-row justify-between items-center p-4">
-            <span className="font-semibold text-blue-700">[{formatTime(note.timestamp)}]</span>
+            <span className="font-semibold text-primary">[{formatTime(note.timestamp)}]</span>
             <div className="flex space-x-2">
               {isEditing ? (
                 <>
-                  <button onClick={(e) => { e.stopPropagation(); handleSave(note.id!); }} className="px-3 py-1 text-sm text-white bg-blue-700 rounded-md hover:bg-blue-600">Save</button>
-                  <button onClick={(e) => { e.stopPropagation(); setEditingNoteId(null); }} className="px-3 py-1 text-sm text-gray-700 bg-gray-200 rounded-md hover:bg-gray-300">Cancel</button>
+                  <Button size="sm" onClick={(e) => { e.stopPropagation(); handleSave(note.id!); }}>Save</Button>
+                  <Button size="sm" variant="secondary" onClick={(e) => { e.stopPropagation(); setEditingNoteId(null); }}>Cancel</Button>
                 </>
               ) : (
                 <>
-                  <button onClick={(e) => { e.stopPropagation(); handleEdit(note); }} className="px-3 py-1 text-sm text-gray-700 bg-gray-200 rounded-md hover:bg-gray-300">Edit</button>
-                  <button onClick={(e): void => { e.stopPropagation(); handleDelete(note.id); }} className="px-3 py-1 text-sm text-white bg-red-700 rounded-sm hover:bg-red-600">Delete</button>
+                  <Button size="sm" variant="secondary" onClick={(e) => { e.stopPropagation(); handleEdit(note); }}>Edit</Button>
+                  <Button size="sm" variant="destructive" onClick={(e): void => { e.stopPropagation(); handleDelete(note.id); }}>Delete</Button>
                 </>
               )}
             </div>
@@ -120,7 +121,7 @@ function ChatBox({ playerRef }: ChatBoxProps) {
                 className="w-full p-2 border rounded-md"
               />
             ) : (
-              <p className="text-gray-800">{note.content}</p>
+              <p className="text-foreground">{note.content}</p>
             )}
           </CardContent>
         </Card>
@@ -130,7 +131,7 @@ function ChatBox({ playerRef }: ChatBoxProps) {
 
   return (
     <div className="flex flex-col h-full">
-      <h2 className="text-2xl font-bold text-gray-800">Notes</h2>
+      <h2 className="text-2xl font-bold text-foreground">Notes</h2>
       <div className="flex-grow mt-4 overflow-y-auto">
         <ul className="pr-4">
           {listMap}

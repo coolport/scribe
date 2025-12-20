@@ -119,23 +119,9 @@ function ChatBox({ playerRef }: ChatBoxProps) {
           if (!isEditing) seekToTime(note.timestamp);
         }}
       >
-        <div className="flex justify-between items-start gap-4">
-          <div className="flex-grow">
-            <div className="font-semibold text-primary mb-2 text-sm">
-              [{formatTime(note.timestamp)}]
-            </div>
-            {isEditing ? (
-              <Textarea
-                value={editingContent}
-                onChange={(e) => setEditingContent(e.target.value)}
-                onClick={(e) => e.stopPropagation()}
-                autoFocus
-              />
-            ) : (
-              <p className="text-foreground whitespace-pre-wrap">
-                {note.content}
-              </p>
-            )}
+        <div className="flex justify-between items-center mb-2">
+          <div className="font-semibold text-primary text-sm">
+            [{formatTime(note.timestamp)}]
           </div>
           <div className="flex space-x-1 flex-shrink-0">
             {isEditing ? (
@@ -187,6 +173,18 @@ function ChatBox({ playerRef }: ChatBoxProps) {
             )}
           </div>
         </div>
+        {isEditing ? (
+          <Textarea
+            value={editingContent}
+            onChange={(e) => setEditingContent(e.target.value)}
+            onClick={(e) => e.stopPropagation()}
+            autoFocus
+          />
+        ) : (
+          <p className="text-foreground whitespace-pre-wrap">
+            {note.content}
+          </p>
+        )}
       </li>
     );
   });

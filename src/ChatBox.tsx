@@ -129,7 +129,6 @@ function ChatBox({ playerRef }: ChatBoxProps) {
                 value={editingContent}
                 onChange={(e) => setEditingContent(e.target.value)}
                 onClick={(e) => e.stopPropagation()}
-                className="w-full p-2 border rounded-md bg-transparent"
                 autoFocus
               />
             ) : (
@@ -206,7 +205,6 @@ function ChatBox({ playerRef }: ChatBoxProps) {
           }}
         >
           <Textarea
-            className="w-full p-2 border rounded-md"
             value={userNoteString}
             placeholder="Enter new note..."
             onChange={(e: ChangeEvent<HTMLTextAreaElement>): void => {

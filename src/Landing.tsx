@@ -42,16 +42,18 @@ function Landing() {
       </div>
 
       {/* Hero Content */}
-      <div className="relative z-10 flex h-full flex-col items-center">
+      <div className="relative z-10 flex h-full flex-col items-center px-4">
         <div className="flex-1 flex flex-col justify-end">
           <div className="text-center mb-16">
-            <h1 className="text-9xl font-bold text-white font-serif">Scribe</h1>
-            <p className="mt-4 text-xl text-slate-300 font-sans">
+            <h1 className="text-8xl md:text-9xl font-bold text-white font-serif">
+              Scribe
+            </h1>
+            <p className="mt-4 text-base md:text-xl text-slate-400 font-sans">
               Timestamped notes for YouTube
             </p>
           </div>
         </div>
-        <div className="w-full max-w-xl">
+        <div className="w-full max-w-xl px-6 md:px-0">
           <form
             onSubmit={(e) => {
               e.preventDefault();
@@ -59,7 +61,9 @@ function Landing() {
             }}
           >
             <Input
-              className="w-full bg-transparent text-center text-white text-2xl px-6 py-6 border-0 border-b-2 border-slate-700 focus-visible:ring-0 focus:outline-none focus:bg-transparent transition-colors shadow-none placeholder:text-slate-600"
+              // className="w-full bg-transparent text-center text-white text-2xl px-6 py-6 border-0 border-b-2 border-slate-700 focus-visible:ring-0 focus:outline-none focus:bg-transparent transition-colors shadow-none placeholder:text-slate-600"
+              // className="w-full bg-transparent text-center text-white text-2xl px-6 py-6 border-0 border-b-2 border-slate-700 focus-visible:ring-0 focus:outline-none focus:bg-transparent transition-colors shadow-none placeholder:text-slate-600"
+              className="w-full bg-transparent text-center text-white text-sm md:text-2xl px-6 py-6 border-0 border-b-2 border-slate-700 focus-visible:ring-0 focus:outline-none focus:bg-transparent transition-colors shadow-none placeholder:text-slate-600"
               placeholder="Enter YouTube Link"
               value={formValue ?? ""}
               onChange={(e: ChangeEvent<HTMLInputElement>): void => {

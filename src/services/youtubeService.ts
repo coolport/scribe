@@ -1,4 +1,4 @@
-const API_KEY = 'YOUR_API_KEY_HERE'; // Placeholder for the API key
+const API_KEY = import.meta.env.VITE_YOUTUBE_API_KEY;
 
 interface VideoDetails {
   title: string;
@@ -7,23 +7,41 @@ interface VideoDetails {
 
 // Mock function until API key is provided
 const getVideoDetails = async (videoId: string): Promise<VideoDetails> => {
-  console.log(`Fetching details for video: ${videoId}`);
-  
-  // This is mock data.
-  // In a real implementation, you would use fetch() with the YouTube Data API.
-  return Promise.resolve({
-    title: 'Example Video Title',
-    description: `
-This is a sample video description.
+  if (!API_KEY) {
+    console.error("YouTube API key is not configured.");
+    return Promise.resolve({
+      title: 'API Key Missing',
+      description: 'YouTube API key is not configured. Please add VITE_YOUTUBE_API_KEY to your .env file.',
+    });
+  }
 
-Here are the chapters:
-0:00 Intro
-1:30 Exploring the Main Topic
-5:15 A Deep Dive
-10:00 Q&A Session
-12:45 Final Thoughts
-    `,
-  });
+  const YOUTUBE_API_URL = `https://www.googleapis.com/youtube/v3/videos?part=snippet&id=${videoId}&key=${API_KEY}`;
+
+  try {
+    const response = await fetch(YOUTUBE_API_URL);
+    if (!response.ok) {
+      const errorData = await response.json();
+      console.error("YouTube API error:", errorData);
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+    const data = await response.json();
+
+    if (data.items && data.items.length > 0) {
+      const snippet = data.items[0].snippet;
+      return {
+        title: snippet.title,
+        description: snippet.description,
+      };
+    } else {
+      throw new Error("No video items found for the given video ID.");
+    }
+  } catch (error) {
+    console.error("Failed to fetch YouTube video details:", error);
+    return {
+      title: 'Error Loading Video Details',
+      description: 'Could not load video description. Please check the video ID and API key.',
+    };
+  }
 };
 
 export const youtubeService = {

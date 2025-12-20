@@ -9,7 +9,7 @@ function Home() {
   const vidUrl = params.videoUrl || '';
 
   return (
-    <div className="flex flex-col md:flex-row w-full min-h-screen bg-background">
+    <div className="flex flex-col md:flex-row w-full h-screen bg-background overflow-hidden">
       <div className="w-full md:w-[70%] flex items-center justify-center bg-black">
         <div className="relative w-full" style={{ aspectRatio: '16 / 9' }}>
           <Player videoId={vidUrl} ref={playerRef} />

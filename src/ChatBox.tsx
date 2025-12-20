@@ -1,4 +1,4 @@
-import { useEffect, useState, type ChangeEvent, type FormEvent, type RefObject, type KeyboardEvent } from "react";
+import { useEffect, useState, type ChangeEvent, type FormEvent, type RefObject, type KeyboardEvent, useRef } from "react";
 import formatTime from "./utils/format-time";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
@@ -16,9 +16,16 @@ function ChatBox({ playerRef }: ChatBoxProps) {
   const [userNoteString, setUserNoteString] = useState<string>('');
   const [editingNoteId, setEditingNoteId] = useState<number | null>(null);
   const [editingContent, setEditingContent] = useState<string>('');
+  const notesContainerRef = useRef<HTMLDivElement>(null);
 
   const params = useParams();
   const vidId = params.videoUrl || '';
+
+  useEffect(() => {
+    if (notesContainerRef.current) {
+      notesContainerRef.current.scrollTop = notesContainerRef.current.scrollHeight;
+    }
+  }, [notes]);
 
   useEffect(() => {
     const getta = async (): Promise<void> => {
@@ -132,7 +139,7 @@ function ChatBox({ playerRef }: ChatBoxProps) {
   return (
     <div className="flex flex-col h-full">
       <h2 className="text-2xl font-bold text-foreground">Notes</h2>
-      <div className="flex-grow mt-4 overflow-y-auto">
+      <div ref={notesContainerRef} className="flex-grow mt-4 overflow-y-auto">
         <ul className="pr-4">
           {listMap}
         </ul>

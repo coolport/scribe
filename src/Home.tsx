@@ -9,13 +9,13 @@ function Home() {
   const vidUrl = params.videoUrl || '';
 
   return (
-    <div className="flex w-full h-screen bg-background">
-      <div className="w-[70%] h-full">
-        <div id="playerContainer" className="w-full h-full">
-          <Player videoId={vidUrl} ref={playerRef}></Player>
+    <div className="flex flex-col md:flex-row w-full min-h-screen bg-background">
+      <div className="w-full md:w-[70%] flex items-center justify-center bg-black">
+        <div className="relative w-full" style={{ aspectRatio: '16 / 9' }}>
+          <Player videoId={vidUrl} ref={playerRef} />
         </div>
       </div>
-      <div className="w-[30%] h-full p-4 bg-card border-l border-border">
+      <div className="w-full md:w-[30%] p-4 bg-card border-t md:border-t-0 md:border-l border-border flex flex-col flex-grow">
         <ChatBox playerRef={playerRef} />
       </div>
     </div>

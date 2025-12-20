@@ -20,8 +20,8 @@ const Player = forwardRef<any, PlayerProps>(({ videoId, onReady, opts }, ref) =>
   }, [videoId])
 
   const defaultOpts: YouTubeProps['opts'] = {
-    height: 720,
-    width: 1280,
+    height: '100%',
+    width: '100%',
     playerVars: { // https://developers.google.com/youtube/player_parameters
       autoplay: 1,
     },
@@ -51,7 +51,8 @@ const Player = forwardRef<any, PlayerProps>(({ videoId, onReady, opts }, ref) =>
         <YouTube
           videoId={videoId}
           opts={opts || defaultOpts}
-          onReady={onPlayerReady} />
+          onReady={onPlayerReady}
+          className="absolute top-0 left-0 w-full h-full" />
       </>
       : <p>Error loading video.</p>
     }

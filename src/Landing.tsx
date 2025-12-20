@@ -28,12 +28,14 @@ function Landing() {
   };
 
   return (
-    <div className="flex flex-col items-center justify-center h-screen bg-background">
-      <div className="text-center">
-        <h1 className="text-6xl font-bold text-foreground">Scribe</h1>
-        <p className="mt-2 text-lg text-muted-foreground">Your YouTube Note-Taker</p>
+    <div className="flex flex-col items-center h-screen bg-background">
+      <div className="flex-1 flex flex-col justify-end">
+        <div className="text-center mb-16">
+          <h1 className="text-9xl font-bold text-foreground">Scribe</h1>
+          <p className="mt-4 text-3xl text-muted-foreground">Your YouTube Note-Taker</p>
+        </div>
       </div>
-      <div className="w-full max-w-md mt-8">
+      <div className="w-full max-w-xl">
         <form
           onSubmit={(e) => {
             e.preventDefault();
@@ -41,7 +43,7 @@ function Landing() {
           }}
         >
           <Input
-            className="w-full px-4 py-3 text-lg text-center bg-background border rounded-full focus:outline-none focus:ring-2 focus:ring-ring"
+            className="w-full px-6 py-6 text-2xl text-center bg-background border rounded-full focus:outline-none focus:ring-2 focus:ring-ring"
             placeholder="Paste your YouTube link here"
             value={formValue ?? ''}
             onChange={(e: ChangeEvent<HTMLInputElement>): void => {
@@ -52,6 +54,7 @@ function Landing() {
           />
         </form>
       </div>
+      <div className="flex-1" />
     </div>
   )
 }

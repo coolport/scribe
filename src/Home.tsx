@@ -67,15 +67,15 @@ function Home() {
           <Player videoId={vidUrl} ref={playerRef} onReady={onPlayerReady} onEnd={onPlayerEnd} />
         </div>
         <ChapterBar videoId={vidUrl} playerRef={playerRef} duration={duration} />
-        <div className="grid grid-cols-8 gap-2 p-2 flex-grow">
-          <Button className="h-full" onClick={handleRewind}>Rewind 5s</Button>
-          <Button className="h-full" onClick={handlePlayPause}>Play/Pause</Button>
-          <Button className="h-full" onClick={handleForward}>Forward 5s</Button>
-          <Button className="h-full" variant={isLooping ? 'default' : 'secondary'} onClick={handleToggleLoop}>Loop</Button>
-          <Button variant="secondary" className="h-full" onClick={() => handleSetPlaybackRate(0.75)}>0.75x</Button>
-          <Button variant="secondary" className="h-full" onClick={() => handleSetPlaybackRate(1)}>1x</Button>
-          <Button variant="secondary" className="h-full" onClick={() => handleSetPlaybackRate(1.5)}>1.5x</Button>
-          <Button variant="secondary" className="h-full" onClick={() => handleSetPlaybackRate(2)}>2x</Button>
+        <div className="grid grid-cols-8 gap-2 p-2">
+          <Button size="sm" variant="outline" className="text-xs" onClick={handleRewind}>Rewind 5s</Button>
+          <Button size="sm" variant="outline" className="text-xs" onClick={handlePlayPause}>Play/Pause</Button>
+          <Button size="sm" variant="outline" className="text-xs" onClick={handleForward}>Forward 5s</Button>
+          <Button size="sm" variant={isLooping ? 'default' : 'outline'} className="text-xs" onClick={handleToggleLoop}>Loop</Button>
+          <Button size="sm" variant="outline" className="text-xs" onClick={() => handleSetPlaybackRate(0.75)}>0.75x</Button>
+          <Button size="sm" variant="outline" className="text-xs" onClick={() => handleSetPlaybackRate(1)}>1x</Button>
+          <Button size="sm" variant="outline" className="text-xs" onClick={() => handleSetPlaybackRate(1.5)}>1.5x</Button>
+          <Button size="sm" variant="outline" className="text-xs" onClick={() => handleSetPlaybackRate(2)}>2x</Button>
         </div>
       </div>
       <div className="w-full md:w-[30%] p-4 bg-card border-t md:border-t-0 md:border-l border-border flex flex-col flex-grow">

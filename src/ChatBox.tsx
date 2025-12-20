@@ -1,4 +1,12 @@
-import { useEffect, useState, type ChangeEvent, type FormEvent, type RefObject, type KeyboardEvent, useRef } from "react";
+import {
+  useEffect,
+  useState,
+  type ChangeEvent,
+  type FormEvent,
+  type RefObject,
+  type KeyboardEvent,
+  useRef,
+} from "react";
 import formatTime from "./utils/format-time";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
@@ -13,64 +21,67 @@ interface ChatBoxProps {
 
 function ChatBox({ playerRef }: ChatBoxProps) {
   const [notes, setNotes] = useState<Note[]>([]);
-  const [userNoteString, setUserNoteString] = useState<string>('');
+  const [userNoteString, setUserNoteString] = useState<string>("");
   const [editingNoteId, setEditingNoteId] = useState<number | null>(null);
-  const [editingContent, setEditingContent] = useState<string>('');
+  const [editingContent, setEditingContent] = useState<string>("");
   const notesContainerRef = useRef<HTMLDivElement>(null);
 
   const params = useParams();
-  const vidId = params.videoUrl || '';
+  const vidId = params.videoUrl || "";
 
   useEffect(() => {
     if (notesContainerRef.current) {
-      notesContainerRef.current.scrollTop = notesContainerRef.current.scrollHeight;
+      notesContainerRef.current.scrollTop =
+        notesContainerRef.current.scrollHeight;
     }
   }, [notes]);
 
   useEffect(() => {
     const getta = async (): Promise<void> => {
-      const lilist = await noteService.getNotes(vidId)
+      const lilist = await noteService.getNotes(vidId);
       setNotes(lilist);
-    }
+    };
     getta();
-  }, [vidId])
+  }, [vidId]);
 
   const handleSubmit = async (): Promise<void> => {
     if (userNoteString.trim()) {
       try {
-        const currentTime = playerRef.current ? playerRef.current.getCurrentTime() : 0;
+        const currentTime = playerRef.current
+          ? playerRef.current.getCurrentTime()
+          : 0;
         const newNote = await noteService.addNote({
           videoId: vidId,
           content: userNoteString,
           timestamp: currentTime,
         });
-        setNotes(prev => [...prev, newNote]);
-        setUserNoteString('');
+        setNotes((prev) => [...prev, newNote]);
+        setUserNoteString("");
       } catch (e) {
         console.error("Failed: ", e);
       }
     } else {
       console.log("Empty String");
     }
-  }
+  };
 
-  const handleDelete = async (id: Note['id']): Promise<void> => {
+  const handleDelete = async (id: Note["id"]): Promise<void> => {
     if (id === undefined) {
       console.error("Can't delete note.");
       return;
     }
     try {
       await noteService.deleteNote(id!);
-      setNotes(notes.filter((note: Note) => note.id !== id))
+      setNotes(notes.filter((note: Note) => note.id !== id));
     } catch (e) {
-      console.error("Failed to delete: ", e)
+      console.error("Failed to delete: ", e);
     }
-  }
+  };
 
   const handleUpdateNote = async (id: number, content: string) => {
     try {
       const updatedNote = await noteService.updateNote(id, { content });
-      setNotes(notes.map(note => note.id === id ? updatedNote : note));
+      setNotes(notes.map((note) => (note.id === id ? updatedNote : note)));
     } catch (error) {
       console.error("Failed to update note:", error);
     }
@@ -84,65 +95,108 @@ function ChatBox({ playerRef }: ChatBoxProps) {
   const handleSave = (id: number) => {
     handleUpdateNote(id, editingContent);
     setEditingNoteId(null);
-    setEditingContent('');
+    setEditingContent("");
   };
 
-  const seekToTime = (time: Note['timestamp']): void => {
+  const seekToTime = (time: Note["timestamp"]): void => {
     playerRef.current.seekTo(time, true);
-  }
+  };
 
   const handleKeyDown = (e: KeyboardEvent<HTMLTextAreaElement>): void => {
-    if (e.key === 'Enter' && !e.shiftKey) {
+    if (e.key === "Enter" && !e.shiftKey) {
       e.preventDefault();
       handleSubmit();
     }
   };
 
-  const listMap = notes.map(note => {
+  const listMap = notes.map((note) => {
     const isEditing = editingNoteId === note.id;
     return (
-      <li key={note.id} className="mb-4" onClick={(): void => { if (!isEditing) seekToTime(note.timestamp); }}>
-        <Card className="cursor-pointer hover:bg-accent">
-          <CardHeader className="flex flex-row justify-between items-center p-4">
-            <span className="font-semibold text-primary">[{formatTime(note.timestamp)}]</span>
-            <div className="flex space-x-2">
-              {isEditing ? (
-                <>
-                  <Button size="sm" onClick={(e) => { e.stopPropagation(); handleSave(note.id!); }}>Save</Button>
-                  <Button size="sm" variant="secondary" onClick={(e) => { e.stopPropagation(); setEditingNoteId(null); }}>Cancel</Button>
-                </>
-              ) : (
-                <>
-                  <Button size="sm" variant="secondary" onClick={(e) => { e.stopPropagation(); handleEdit(note); }}>Edit</Button>
-                  <Button size="sm" variant="destructive" onClick={(e): void => { e.stopPropagation(); handleDelete(note.id); }}>Delete</Button>
-                </>
-              )}
+      <li
+        key={note.id}
+        className="border-b border-border p-4 transition-colors hover:bg-accent/50 cursor-pointer"
+        onClick={(): void => {
+          if (!isEditing) seekToTime(note.timestamp);
+        }}
+      >
+        <div className="flex justify-between items-start gap-4">
+          <div className="flex-grow">
+            <div className="font-semibold text-primary mb-2 text-sm">
+              [{formatTime(note.timestamp)}]
             </div>
-          </CardHeader>
-          <CardContent className="p-4">
             {isEditing ? (
               <Textarea
                 value={editingContent}
                 onChange={(e) => setEditingContent(e.target.value)}
                 onClick={(e) => e.stopPropagation()}
-                className="w-full p-2 border rounded-md"
+                className="w-full p-2 border rounded-md bg-transparent"
+                autoFocus
               />
             ) : (
-              <p className="text-foreground">{note.content}</p>
+              <p className="text-foreground whitespace-pre-wrap">
+                {note.content}
+              </p>
             )}
-          </CardContent>
-        </Card>
+          </div>
+          <div className="flex space-x-1 flex-shrink-0">
+            {isEditing ? (
+              <>
+                <Button
+                  size="sm"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handleSave(note.id!);
+                  }}
+                >
+                  Save
+                </Button>
+                <Button
+                  size="sm"
+                  variant="secondary"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setEditingNoteId(null);
+                  }}
+                >
+                  Cancel
+                </Button>
+              </>
+            ) : (
+              <>
+                <Button
+                  size="sm"
+                  variant="ghost"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handleEdit(note);
+                  }}
+                >
+                  Edit
+                </Button>
+                <Button
+                  size="sm"
+                  variant="ghost"
+                  className="text-destructive hover:text-destructive hover:bg-destructive/10"
+                  onClick={(e): void => {
+                    e.stopPropagation();
+                    handleDelete(note.id);
+                  }}
+                >
+                  Delete
+                </Button>
+              </>
+            )}
+          </div>
+        </div>
       </li>
-    )
+    );
   });
 
   return (
     <div className="flex flex-col h-full">
       <h2 className="text-2xl font-bold text-foreground">Notes</h2>
       <div ref={notesContainerRef} className="flex-grow mt-4 overflow-y-auto">
-        <ul className="pr-4">
-          {listMap}
-        </ul>
+        <ul>{listMap}</ul>
       </div>
       <div className="mt-4">
         <form
@@ -163,7 +217,7 @@ function ChatBox({ playerRef }: ChatBoxProps) {
         </form>
       </div>
     </div>
-  )
+  );
 }
 
 export default ChatBox;

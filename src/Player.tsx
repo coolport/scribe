@@ -5,10 +5,11 @@ import YouTube, { type YouTubeProps } from "react-youtube";
 type PlayerProps = {
   videoId: string | null;
   onReady?: YouTubeProps['onReady'];
+  onEnd?: YouTubeProps['onEnd'];
   opts?: YouTubeProps['opts'];
 }
 
-const Player = forwardRef<any, PlayerProps>(({ videoId, onReady, opts }, ref) => {
+const Player = forwardRef<any, PlayerProps>(({ videoId, onReady, onEnd, opts }, ref) => {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   // const [isReady, setIsReady] = useState<boolean>(false);
 
@@ -52,6 +53,7 @@ const Player = forwardRef<any, PlayerProps>(({ videoId, onReady, opts }, ref) =>
           videoId={videoId}
           opts={opts || defaultOpts}
           onReady={onPlayerReady}
+          onEnd={onEnd}
           className="absolute top-0 left-0 w-full h-full" />
       </>
       : <p>Error loading video.</p>

@@ -82,7 +82,7 @@ function Home() {
           </div>
         </div>
       </div>
-      <div className="w-full md:w-[30%] p-4 bg-card border-t md:border-t-0 md:border-l border-border flex flex-col flex-grow">
+      <div className="w-full md:w-[30%] p-4 bg-card border-t md:border-t-0 md:border-l border-border flex flex-col flex-grow min-h-0">
         <ChatBox playerRef={playerRef} />
       </div>
     </div>

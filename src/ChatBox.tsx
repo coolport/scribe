@@ -161,7 +161,7 @@ function ChatBox({ playerRef }: ChatBoxProps) {
                 <Button
                   size="sm"
                   variant="ghost"
-                  className="text-destructive hover:text-destructive hover:bg-destructive/10"
+                  className="text-destructive hover:text-destructive hover:bg-destructive/10 color"
                   onClick={(e): void => {
                     e.stopPropagation();
                     handleDelete(note.id);
@@ -181,9 +181,7 @@ function ChatBox({ playerRef }: ChatBoxProps) {
             autoFocus
           />
         ) : (
-          <p className="text-foreground whitespace-pre-wrap">
-            {note.content}
-          </p>
+          <p className="text-foreground whitespace-pre-wrap">{note.content}</p>
         )}
       </li>
     );

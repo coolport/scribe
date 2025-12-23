@@ -9,7 +9,7 @@ type PlayerProps = {
   opts?: YouTubeProps['opts'];
 }
 
-const Player = forwardRef<any, PlayerProps>(({ videoId, onReady, onEnd, opts }, ref) => {
+const Player = forwardRef<YouTube, PlayerProps>(({ videoId, onReady, onEnd, opts }, ref) => {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   // const [isReady, setIsReady] = useState<boolean>(false);
 

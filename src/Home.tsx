@@ -4,16 +4,16 @@ import ChatBox from './ChatBox';
 import ChapterBar from './ChapterBar';
 import { useParams } from 'react-router';
 import { Button } from '@/components/ui/button';
-import type { YouTubePlayer } from 'react-youtube';
+import type { YouTube } from 'react-youtube';
 
 function Home() {
-  const playerRef = useRef<any>(null);
+  const playerRef = useRef<YouTube>(null);
   const params = useParams();
   const vidUrl = params.videoUrl || '';
   const [duration, setDuration] = useState(0);
   const [isLooping, setIsLooping] = useState(false);
 
-  const onPlayerReady = (event: { target: YouTubePlayer }) => {
+  const onPlayerReady = (event: { target: YouTube }) => {
     setDuration(event.target.getDuration());
   };
 

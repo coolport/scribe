@@ -10,13 +10,14 @@ import {
 import formatTime from "./utils/format-time";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
-import { Card, CardContent, CardHeader } from "./components/ui/card";
 import noteService from "./services/noteService";
 import { type Note } from "./services/noteContract";
 import { useParams } from "react-router";
+import { Menu } from "lucide-react";
+import YouTube from "react-youtube";
 
 interface ChatBoxProps {
-  playerRef: RefObject<any>;
+  playerRef: RefObject<YouTube>;
 }
 
 function ChatBox({ playerRef }: ChatBoxProps) {
@@ -24,6 +25,7 @@ function ChatBox({ playerRef }: ChatBoxProps) {
   const [userNoteString, setUserNoteString] = useState<string>("");
   const [editingNoteId, setEditingNoteId] = useState<number | null>(null);
   const [editingContent, setEditingContent] = useState<string>("");
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
   const notesContainerRef = useRef<HTMLDivElement>(null);
 
   const params = useParams();
@@ -189,7 +191,29 @@ function ChatBox({ playerRef }: ChatBoxProps) {
 
   return (
     <div className="flex flex-col h-full">
-      <h2 className="text-2xl font-bold text-foreground">Notes</h2>
+      <div className="flex justify-between items-center">
+        <h2 className="text-2xl font-bold text-foreground">Notes</h2>
+        <Button variant="ghost" size="icon" onClick={() => setIsMenuOpen(true)}>
+          <Menu className="h-6 w-6" />
+        </Button>
+      </div>
+      {isMenuOpen && (
+        <div
+          className="fixed inset-0 bg-black/30 z-40"
+          onClick={() => setIsMenuOpen(false)}
+        >
+          <div
+            className="fixed top-0 right-0 h-full w-64 bg-background z-50 p-4"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <h3 className="text-lg font-semibold mb-4">Menu</h3>
+            <div className="flex flex-col space-y-2">
+              <Button variant="outline">Sign Up</Button>
+              <Button>Login</Button>
+            </div>
+          </div>
+        </div>
+      )}
       <div ref={notesContainerRef} className="flex-grow mt-4 overflow-y-auto">
         <ul>{listMap}</ul>
       </div>

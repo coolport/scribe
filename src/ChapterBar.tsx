@@ -1,6 +1,7 @@
-import { useEffect, useState, type RefObject } from "react";
+import { useEffect, useState, type RefObject, useCallback } from "react";
 import { youtubeService } from "./services/youtubeService";
 import { Button } from "./components/ui/button";
+import YouTube from "react-youtube";
 
 interface Chapter {
   startTime: number;
@@ -10,12 +11,81 @@ interface Chapter {
 
 interface ChapterBarProps {
   videoId: string;
-  playerRef: RefObject<any>;
+  playerRef: RefObject<YouTube>;
   duration: number;
 }
 
+const timeStringToSeconds = (timeString: string): number => {
+  const parts = timeString.split(":").map(Number);
+  let seconds = 0;
+  if (parts.length === 3) {
+    // HH:MM:SS
+    seconds += parts[0] * 3600;
+    seconds += parts[1] * 60;
+    seconds += parts[2];
+  } else if (parts.length === 2) {
+    // MM:SS
+    seconds += parts[0] * 60;
+    seconds += parts[1];
+  }
+  return seconds;
+};
+
 const ChapterBar = ({ videoId, playerRef, duration }: ChapterBarProps) => {
   const [chapters, setChapters] = useState<Chapter[]>([]);
+
+  const parseChapters = useCallback(
+    (description: string): { time: number; title: string }[] => {
+      const chapterRegex = /(\d{1,2}:\d{2}(?::\d{2})?)\s*(.*)/g;
+      const lines = description.split("\n");
+      const chapters: { time: number; title: string }[] = [];
+
+      for (const line of lines) {
+        const match = chapterRegex.exec(line);
+        if (match) {
+          chapters.push({
+            time: timeStringToSeconds(match[1]),
+            title: match[2].trim(),
+          });
+        }
+      }
+      return chapters;
+    },
+    [],
+  );
+
+  const processChapters = useCallback(
+    (
+      parsedChapters: { time: number; title: string }[],
+      totalDuration: number,
+    ): Chapter[] => {
+      if (parsedChapters.length === 0) return [];
+
+      const chaptersWithEndTime: Chapter[] = [];
+
+      // Add "Start" chapter if the first chapter doesn't start at 0
+      if (parsedChapters[0].time > 0) {
+        chaptersWithEndTime.push({
+          startTime: 0,
+          endTime: parsedChapters[0].time,
+          title: "Start",
+        });
+      }
+
+      parsedChapters.forEach((chapter, index) => {
+        const nextChapter = parsedChapters[index + 1];
+        const endTime = nextChapter ? nextChapter.time : totalDuration;
+        chaptersWithEndTime.push({
+          startTime: chapter.time,
+          endTime: endTime,
+          title: chapter.title,
+        });
+      });
+
+      return chaptersWithEndTime;
+    },
+    [],
+  );
 
   useEffect(() => {
     const fetchAndProcessChapters = async () => {
@@ -28,72 +98,8 @@ const ChapterBar = ({ videoId, playerRef, duration }: ChapterBarProps) => {
     };
 
     fetchAndProcessChapters();
-  }, [videoId, duration]);
+  }, [videoId, duration, parseChapters, processChapters]);
 
-  const parseChapters = (
-    description: string,
-  ): { time: number; title: string }[] => {
-    const chapterRegex = /(\d{1,2}:\d{2}(?::\d{2})?)\s*(.*)/g;
-    const lines = description.split("\n");
-    const chapters: { time: number; title: string }[] = [];
-
-    for (const line of lines) {
-      const match = chapterRegex.exec(line);
-      if (match) {
-        chapters.push({
-          time: timeStringToSeconds(match[1]),
-          title: match[2].trim(),
-        });
-      }
-    }
-    return chapters;
-  };
-
-  const processChapters = (
-    parsedChapters: { time: number; title: string }[],
-    totalDuration: number,
-  ): Chapter[] => {
-    if (parsedChapters.length === 0) return [];
-
-    let chaptersWithEndTime: Chapter[] = [];
-
-    // Add "Start" chapter if the first chapter doesn't start at 0
-    if (parsedChapters[0].time > 0) {
-      chaptersWithEndTime.push({
-        startTime: 0,
-        endTime: parsedChapters[0].time,
-        title: "Start",
-      });
-    }
-
-    parsedChapters.forEach((chapter, index) => {
-      const nextChapter = parsedChapters[index + 1];
-      const endTime = nextChapter ? nextChapter.time : totalDuration;
-      chaptersWithEndTime.push({
-        startTime: chapter.time,
-        endTime: endTime,
-        title: chapter.title,
-      });
-    });
-
-    return chaptersWithEndTime;
-  };
-
-  const timeStringToSeconds = (timeString: string): number => {
-    const parts = timeString.split(":").map(Number);
-    let seconds = 0;
-    if (parts.length === 3) {
-      // HH:MM:SS
-      seconds += parts[0] * 3600;
-      seconds += parts[1] * 60;
-      seconds += parts[2];
-    } else if (parts.length === 2) {
-      // MM:SS
-      seconds += parts[0] * 60;
-      seconds += parts[1];
-    }
-    return seconds;
-  };
 
   const handleChapterClick = (time: number) => {
     if (playerRef.current && typeof playerRef.current.seekTo === "function") {

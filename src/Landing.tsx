@@ -21,7 +21,7 @@ function Landing() {
 
   useEffect(() => {
     if (url) {
-      navigate(`/${url}`);
+      navigate(`/video/${url}`);
     }
   }, [navigate, url]);
 

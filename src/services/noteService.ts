@@ -7,7 +7,10 @@ const isUserLoggedIn = (): boolean => {
 };
 
 const noteService: NoteContract = isUserLoggedIn()
-  ? {} as NoteContract // Future: apiNoteService etc etc
-  : localNoteService;
+  ? ({} as NoteContract) // Future: apiNoteService etc etc
+  : {
+      ...localNoteService,
+      getAllNotes: localNoteService.getAllNotes,
+    };
 
 export default noteService;

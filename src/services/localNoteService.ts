@@ -22,6 +22,10 @@ const localNoteService: NoteContract = {
     return db.notes.where('videoId').equals(videoId).toArray();
   },
 
+  getAllNotes: () => {
+    return db.notes.toArray();
+  },
+
   addNote: async (note: Note) => {
     const newId = await db.notes.add(note);
     return { ...note, id: newId };

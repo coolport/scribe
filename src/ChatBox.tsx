@@ -13,11 +13,16 @@ import { Textarea } from "@/components/ui/textarea";
 import noteService from "./services/noteService";
 import { type Note } from "./services/noteContract";
 import { useParams } from "react-router";
-import { Menu } from "lucide-react";
+import { Menu, ArrowRight } from "lucide-react";
 import YouTube from "react-youtube";
 
 interface ChatBoxProps {
   playerRef: RefObject<YouTube>;
+}
+
+interface VideoNoteSummary {
+  videoId: string;
+  noteCount: number;
 }
 
 function ChatBox({ playerRef }: ChatBoxProps) {
@@ -26,6 +31,7 @@ function ChatBox({ playerRef }: ChatBoxProps) {
   const [editingNoteId, setEditingNoteId] = useState<number | null>(null);
   const [editingContent, setEditingContent] = useState<string>("");
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [videoNotes, setVideoNotes] = useState<VideoNoteSummary[]>([]);
   const notesContainerRef = useRef<HTMLDivElement>(null);
 
   const params = useParams();
@@ -46,11 +52,36 @@ function ChatBox({ playerRef }: ChatBoxProps) {
     getta();
   }, [vidId]);
 
+  useEffect(() => {
+    const fetchVideoNotes = async () => {
+      const allNotes = await noteService.getAllNotes();
+      const notesByVideo = allNotes.reduce(
+        (acc, note) => {
+          acc[note.videoId] = (acc[note.videoId] || 0) + 1;
+          return acc;
+        },
+        {} as Record<string, number>,
+      );
+
+      const summaries: VideoNoteSummary[] = Object.entries(notesByVideo).map(
+        ([videoId, noteCount]) => ({
+          videoId,
+          noteCount,
+        }),
+      );
+      setVideoNotes(summaries);
+    };
+
+    if (isMenuOpen) {
+      fetchVideoNotes();
+    }
+  }, [isMenuOpen]);
+
   const handleSubmit = async (): Promise<void> => {
     if (userNoteString.trim()) {
       try {
         const currentTime = playerRef.current
-          ? playerRef.current.getCurrentTime()
+          ? await playerRef.current.getCurrentTime()
           : 0;
         const newNote = await noteService.addNote({
           videoId: vidId,
@@ -203,13 +234,45 @@ function ChatBox({ playerRef }: ChatBoxProps) {
           onClick={() => setIsMenuOpen(false)}
         >
           <div
-            className="fixed top-0 right-0 h-full w-64 bg-background z-50 p-4"
+            className={`fixed top-0 right-0 h-full w-[85%] max-w-md bg-background z-50 p-4 transform transition-transform duration-300 ease-in-out ${
+              isMenuOpen ? "translate-x-0" : "translate-x-full"
+            }`}
             onClick={(e) => e.stopPropagation()}
           >
-            <h3 className="text-lg font-semibold mb-4">Menu</h3>
+            <div className="flex justify-between items-center mb-4">
+              <h3 className="text-lg font-semibold">Menu</h3>
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={() => setIsMenuOpen(false)}
+              >
+                <ArrowRight className="h-6 w-6" />
+              </Button>
+            </div>
             <div className="flex flex-col space-y-2">
               <Button variant="outline">Sign Up</Button>
               <Button>Login</Button>
+            </div>
+            <div className="mt-8">
+              <h4 className="font-semibold mb-2">Local Videos</h4>
+              <ul>
+                {videoNotes.map((video) => (
+                  <li
+                    key={video.videoId}
+                    className="border-b border-border p-2 text-sm"
+                  >
+                    <a
+                      href={`/video/${video.videoId}`}
+                      className="flex justify-between items-center"
+                    >
+                      <span>{video.videoId}</span>
+                      <span className="text-muted-foreground">
+                        {video.noteCount} notes
+                      </span>
+                    </a>
+                  </li>
+                ))}
+              </ul>
             </div>
           </div>
         </div>

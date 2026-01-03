@@ -1,16 +1,13 @@
 import localNoteService from './localNoteService';
 import { type NoteContract } from './noteContract';
+import createApiNoteService from './apiNoteService'; // Import createApiNoteService
 
-const isUserLoggedIn = (): boolean => {
-  // Future: checking if a JWT exists etc
-  return false;
+// This function will return the appropriate note service based on authentication status
+export const getNoteService = (isAuthenticated: boolean, jwt: string | null): NoteContract => {
+
+  if (isAuthenticated && jwt) {
+    return createApiNoteService({ jwt });
+  } else {
+    return localNoteService;
+  }
 };
-
-const noteService: NoteContract = isUserLoggedIn()
-  ? ({} as NoteContract) // Future: apiNoteService etc etc
-  : {
-      ...localNoteService,
-      getAllNotes: localNoteService.getAllNotes,
-    };
-
-export default noteService;

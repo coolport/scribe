@@ -1,5 +1,7 @@
 import { type NoteContract, type Note } from "./noteContract";
 
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8080';
+
 interface ApiNoteServiceProps {
   jwt: string | null;
 }
@@ -9,7 +11,7 @@ const createApiNoteService = ({ jwt }: ApiNoteServiceProps): NoteContract => ({
     if (!jwt) {
       throw new Error("Not authenticated.");
     }
-    const response = await fetch(`http://localhost:8080/api/notes`, {
+    const response = await fetch(`${API_BASE_URL}/api/notes`, {
       headers: {
         Authorization: `Bearer ${jwt}`,
       },
@@ -25,7 +27,7 @@ const createApiNoteService = ({ jwt }: ApiNoteServiceProps): NoteContract => ({
     if (!jwt) {
       throw new Error("Not authenticated.");
     }
-    const response = await fetch("http://localhost:8080/api/notes", {
+    const response = await fetch(`${API_BASE_URL}/api/notes`, {
       headers: {
         Authorization: `Bearer ${jwt}`,
       },
@@ -40,7 +42,7 @@ const createApiNoteService = ({ jwt }: ApiNoteServiceProps): NoteContract => ({
     if (!jwt) {
       throw new Error("Not authenticated.");
     }
-    const response = await fetch("http://localhost:8080/api/notes", {
+    const response = await fetch(`${API_BASE_URL}/api/notes`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -61,7 +63,7 @@ const createApiNoteService = ({ jwt }: ApiNoteServiceProps): NoteContract => ({
     if (!jwt) {
       throw new Error("Not authenticated.");
     }
-    const response = await fetch(`http://localhost:8080/api/notes/${id}`, {
+    const response = await fetch(`${API_BASE_URL}/api/notes/${id}`, {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",
@@ -81,7 +83,7 @@ const createApiNoteService = ({ jwt }: ApiNoteServiceProps): NoteContract => ({
     if (!jwt) {
       throw new Error("Not authenticated.");
     }
-    const response = await fetch(`http://localhost:8080/api/notes/${id}`, {
+    const response = await fetch(`${API_BASE_URL}/api/notes/${id}`, {
       method: "DELETE",
       headers: {
         Authorization: `Bearer ${jwt}`,

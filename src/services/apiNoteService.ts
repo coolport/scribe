@@ -74,9 +74,7 @@ const createApiNoteService = ({ jwt }: ApiNoteServiceProps): NoteContract => ({
     if (!response.ok) {
       throw new Error("Failed to update note via API.");
     }
-    // Assuming the API returns the updated note or a success status
-    // For now, we'll just return a dummy updated note
-    return { id, ...updates } as Note;
+    return response.json();
   },
 
   deleteNote: async (id: number) => {

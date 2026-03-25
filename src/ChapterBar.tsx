@@ -1,7 +1,8 @@
 import { useEffect, useState, type RefObject, useCallback } from "react";
 import { youtubeService } from "./services/youtubeService";
-import { Button } from "./components/ui/button";
 import YouTube from "react-youtube";
+import { motion, AnimatePresence } from "framer-motion";
+import { BookOpen, Map } from "lucide-react";
 
 interface Chapter {
   startTime: number;
@@ -19,12 +20,10 @@ const timeStringToSeconds = (timeString: string): number => {
   const parts = timeString.split(":").map(Number);
   let seconds = 0;
   if (parts.length === 3) {
-    // HH:MM:SS
     seconds += parts[0] * 3600;
     seconds += parts[1] * 60;
     seconds += parts[2];
   } else if (parts.length === 2) {
-    // MM:SS
     seconds += parts[0] * 60;
     seconds += parts[1];
   }
@@ -33,6 +32,7 @@ const timeStringToSeconds = (timeString: string): number => {
 
 const ChapterBar = ({ videoId, playerRef, duration }: ChapterBarProps) => {
   const [chapters, setChapters] = useState<Chapter[]>([]);
+  const [activeChapter, setActiveChapter] = useState<number | null>(null);
 
   const parseChapters = useCallback(
     (description: string): { time: number; title: string }[] => {
@@ -63,12 +63,11 @@ const ChapterBar = ({ videoId, playerRef, duration }: ChapterBarProps) => {
 
       const chaptersWithEndTime: Chapter[] = [];
 
-      // Add "Start" chapter if the first chapter doesn't start at 0
       if (parsedChapters[0].time > 0) {
         chaptersWithEndTime.push({
           startTime: 0,
           endTime: parsedChapters[0].time,
-          title: "Start",
+          title: "Introduction",
         });
       }
 
@@ -78,7 +77,7 @@ const ChapterBar = ({ videoId, playerRef, duration }: ChapterBarProps) => {
         chaptersWithEndTime.push({
           startTime: chapter.time,
           endTime: endTime,
-          title: chapter.title,
+          title: chapter.title || `Segment ${index + 1}`,
         });
       });
 
@@ -91,51 +90,94 @@ const ChapterBar = ({ videoId, playerRef, duration }: ChapterBarProps) => {
     const fetchAndProcessChapters = async () => {
       if (!videoId || duration === 0) return;
 
-      const details = await youtubeService.getVideoDetails(videoId);
-      const parsedChapters = parseChapters(details.description);
-      const processedChapters = processChapters(parsedChapters, duration);
-      setChapters(processedChapters);
+      try {
+        const details = await youtubeService.getVideoDetails(videoId);
+        const parsedChapters = parseChapters(details.description);
+        const processedChapters = processChapters(parsedChapters, duration);
+        setChapters(processedChapters);
+      } catch (error) {
+        console.error("Error fetching chapters:", error);
+      }
     };
 
     fetchAndProcessChapters();
   }, [videoId, duration, parseChapters, processChapters]);
 
-
-  const handleChapterClick = (time: number) => {
+  const handleChapterClick = (time: number, index: number) => {
     if (playerRef.current && typeof playerRef.current.seekTo === "function") {
       playerRef.current.seekTo(time, true);
+      setActiveChapter(index);
     }
   };
 
   if (chapters.length === 0) {
     return (
-      <div className="p-4 border-y border-border">
-        <p className="text-center text-muted-foreground">
-          No timestamps found for this video.
-        </p>
+      <div className="flex items-center justify-center py-6 px-4 border-b border-border/40 bg-muted/5">
+        <div className="flex items-center space-x-2 text-muted-foreground/50">
+          <BookOpen className="h-4 w-4" />
+          <span className="text-[10px] uppercase tracking-[0.2em] font-medium">No chapters detected</span>
+        </div>
       </div>
     );
   }
 
   return (
-    <div className="p-2 border-y border-border">
-      <div className="flex w-full">
-        {chapters.map((chapter) => {
-          const widthPercentage =
-            ((chapter.endTime - chapter.startTime) / duration) * 100;
-          return (
-            <Button
-              key={chapter.startTime}
-              variant="outline"
-              size="sm"
-              className="h-auto rounded-none flex-grow p-2 text-xs"
-              style={{ width: `${widthPercentage}%` }}
-              onClick={() => handleChapterClick(chapter.startTime)}
-            >
-              {chapter.title}
-            </Button>
-          );
-        })}
+    <div className="bg-background border-b border-border/40 shadow-sm overflow-hidden">
+      <div className="px-4 py-2 flex items-center justify-between bg-muted/20">
+        <div className="flex items-center space-x-2">
+          <Map className="h-3.5 w-3.5 text-primary/60" />
+          <h3 className="text-[10px] font-bold uppercase tracking-[0.2em] text-foreground/70">
+            Timeline
+          </h3>
+        </div>
+        <span className="text-[10px] text-muted-foreground font-medium">
+          {chapters.length} Segments
+        </span>
+      </div>
+      
+      <div className="flex w-full h-12 p-1 gap-1">
+        <AnimatePresence>
+          {chapters.map((chapter, index) => {
+            const widthPercentage =
+              ((chapter.endTime - chapter.startTime) / duration) * 100;
+            const isActive = activeChapter === index;
+
+            return (
+              <motion.button
+                key={`${chapter.startTime}-${index}`}
+                initial={{ opacity: 0, scaleX: 0 }}
+                animate={{ opacity: 1, scaleX: 1 }}
+                transition={{ delay: index * 0.05, duration: 0.4 }}
+                className={`relative group h-full flex-grow overflow-hidden rounded-sm transition-all duration-300 ${
+                  isActive 
+                    ? "bg-primary shadow-inner" 
+                    : "bg-muted/40 hover:bg-muted/80"
+                }`}
+                style={{ width: `${widthPercentage}%`, minWidth: '4px' }}
+                onClick={() => handleChapterClick(chapter.startTime, index)}
+              >
+                <div className="absolute inset-0 flex items-center justify-center px-1">
+                  <span className={`text-[8px] font-bold tracking-tighter truncate transition-all duration-300 ${
+                    isActive ? "text-primary-foreground opacity-100" : "text-muted-foreground/0 group-hover:text-muted-foreground group-hover:opacity-100"
+                  }`}>
+                    {chapter.title}
+                  </span>
+                </div>
+                
+                {/* Tooltip-like indicator on hover */}
+                <div className="absolute bottom-0 left-0 h-0.5 w-full bg-primary/20 group-hover:bg-primary transition-colors" />
+                
+                {/* Progress highlight (simulated) */}
+                {isActive && (
+                  <motion.div 
+                    layoutId="activeGlow"
+                    className="absolute inset-0 bg-white/10 blur-md pointer-events-none"
+                  />
+                )}
+              </motion.button>
+            );
+          })}
+        </AnimatePresence>
       </div>
     </div>
   );

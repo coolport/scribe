@@ -5,6 +5,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { getNoteService } from "./services/noteService";
 import { type Note } from "./services/noteContract";
+import { youtubeService } from "./services/youtubeService";
 import { useAuth } from "./contexts/useAuth";
 
 interface LibraryPanelProps {
@@ -15,6 +16,7 @@ interface LibraryPanelProps {
 interface VideoNoteSummary {
   videoId: string;
   noteCount: number;
+  title: string;
 }
 
 function LibraryPanel({ isOpen, onOpenChange }: LibraryPanelProps) {
@@ -33,12 +35,33 @@ function LibraryPanel({ isOpen, onOpenChange }: LibraryPanelProps) {
         {} as Record<string, number>,
       );
 
-      const summaries: VideoNoteSummary[] = Object.entries(notesByVideo).map(
-        ([videoId, noteCount]) => ({
-          videoId,
-          noteCount,
+      const summaries: VideoNoteSummary[] = await Promise.all(
+        Object.entries(notesByVideo).map(async ([videoId, noteCount]) => {
+          let title = videoId;
+
+          if (import.meta.env.VITE_YOUTUBE_API_KEY) {
+            try {
+              const details = await youtubeService.getVideoDetails(videoId);
+              if (
+                details.title &&
+                details.title !== "API Key Missing" &&
+                details.title !== "Error Loading Video Details"
+              ) {
+                title = details.title;
+              }
+            } catch {
+              title = videoId;
+            }
+          }
+
+          return {
+            videoId,
+            noteCount,
+            title,
+          };
         }),
       );
+
       setVideoNotes(summaries);
     };
 
@@ -131,9 +154,14 @@ function LibraryPanel({ isOpen, onOpenChange }: LibraryPanelProps) {
                         onClick={() => onOpenChange(false)}
                         className="flex items-center justify-between rounded-lg border border-transparent p-3 transition-colors hover:border-border/40 hover:bg-accent/50"
                       >
-                        <div className="flex items-center space-x-3">
-                          <div className="h-2 w-2 rounded-full bg-primary/40" />
-                          <span className="text-sm font-medium">{video.videoId}</span>
+                        <div className="flex items-center space-x-3 overflow-hidden">
+                          <div className="h-2 w-2 shrink-0 rounded-full bg-primary/40" />
+                          <div className="min-w-0">
+                            <div className="truncate text-sm font-medium">{video.title}</div>
+                            <div className="truncate text-[10px] uppercase tracking-[0.18em] text-muted-foreground">
+                              {video.videoId}
+                            </div>
+                          </div>
                         </div>
                         <span className="rounded-full bg-muted px-2 py-0.5 text-[10px] font-bold text-muted-foreground">
                           {video.noteCount}

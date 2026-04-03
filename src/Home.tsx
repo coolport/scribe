@@ -15,6 +15,7 @@ function Home() {
   const [isLooping, setIsLooping] = useState(false);
   const [isPlaying, setIsPlaying] = useState(false);
   const [playbackRate, setPlaybackRate] = useState(1);
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   const onPlayerReady = (_event: { target: YouTubePlayer }) => {
     setIsPlaying(true); // YouTube starts playing automatically based on our opts
@@ -79,7 +80,12 @@ function Home() {
       <div className="absolute inset-0 opacity-40 [background-image:linear-gradient(to_right,rgba(255,255,255,0.04)_1px,transparent_1px),linear-gradient(to_bottom,rgba(255,255,255,0.03)_1px,transparent_1px)] [background-size:48px_48px]" />
 
       <div className="relative z-10 flex min-h-screen flex-col">
-        <AppHeader eyebrow="Precision video notes" title="Scribe Workspace" detail={displayVideoId} />
+        <AppHeader
+          eyebrow="Precision video notes"
+          title="Scribe Workspace"
+          detail={displayVideoId}
+          onOpenMenu={() => setIsMenuOpen(true)}
+        />
         <div className="flex w-full flex-1 gap-3 px-3 pb-3 md:px-4 md:pb-4">
           <WorkspaceSidebar
             videoId={vidUrl}
@@ -110,7 +116,11 @@ function Home() {
               className="flex min-h-[420px] w-full flex-col lg:basis-[30%] xl:max-w-[420px]"
             >
               <div className="flex min-h-0 flex-1 rounded-[28px] border border-white/10 bg-slate-900/80 p-3 backdrop-blur-2xl">
-                <ChatBox playerRef={playerRef} />
+                <ChatBox
+                  playerRef={playerRef}
+                  isMenuOpen={isMenuOpen}
+                  onMenuOpenChange={setIsMenuOpen}
+                />
               </div>
             </motion.div>
           </div>

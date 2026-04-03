@@ -1,14 +1,15 @@
 import { Link } from "react-router-dom";
-import { Home, PlaySquare, Sparkles } from "lucide-react";
+import { Home, Menu, PlaySquare, Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 interface AppHeaderProps {
   eyebrow?: string;
   title?: string;
   detail?: string;
+  onOpenMenu?: () => void;
 }
 
-function AppHeader({ eyebrow = "Precision video notes", title = "Scribe", detail }: AppHeaderProps) {
+function AppHeader({ eyebrow = "Precision video notes", title = "Scribe", detail, onOpenMenu }: AppHeaderProps) {
   return (
     <header className="relative z-30 w-full">
       <div className="flex w-full items-center justify-between px-3 py-3 md:px-4 md:py-3.5">
@@ -28,6 +29,16 @@ function AppHeader({ eyebrow = "Precision video notes", title = "Scribe", detail
         </Link>
 
         <div className="hidden items-center gap-2 md:flex">
+          {onOpenMenu ? (
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={onOpenMenu}
+              className="h-9 w-9 rounded-full border border-white/10 bg-white/5 text-slate-200 hover:bg-white/10 hover:text-white"
+            >
+              <Menu className="h-4 w-4" />
+            </Button>
+          ) : null}
           {detail ? (
             <div className="rounded-full border border-white/10 bg-white/5 px-3 py-1.5 text-[10px] font-semibold uppercase tracking-[0.24em] text-slate-400">
               {detail}

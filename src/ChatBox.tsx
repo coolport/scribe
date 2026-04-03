@@ -1,7 +1,7 @@
 import { getNoteService } from "./services/noteService";
 import { type Note } from "./services/noteContract";
 import { useParams, Link } from "react-router";
-import { Menu, X, ChevronRight, Trash2, Edit3, Save, RotateCcw } from "lucide-react";
+import { X, ChevronRight, Trash2, Edit3, Save, RotateCcw } from "lucide-react";
 import { type YouTubePlayer } from "react-youtube";
 import { useAuth } from "./contexts/useAuth";
 import formatTime from "./utils/format-time";
@@ -21,6 +21,8 @@ import { motion, AnimatePresence } from "framer-motion";
 
 interface ChatBoxProps {
   playerRef: RefObject<YouTubePlayer | null>;
+  isMenuOpen: boolean;
+  onMenuOpenChange: (open: boolean) => void;
 }
 
 interface VideoNoteSummary {
@@ -28,12 +30,11 @@ interface VideoNoteSummary {
   noteCount: number;
 }
 
-function ChatBox({ playerRef }: ChatBoxProps) {
+function ChatBox({ playerRef, isMenuOpen, onMenuOpenChange }: ChatBoxProps) {
   const [notes, setNotes] = useState<Note[]>([]);
   const [userNoteString, setUserNoteString] = useState<string>("");
   const [editingNoteId, setEditingNoteId] = useState<number | null>(null);
   const [editingContent, setEditingContent] = useState<string>("");
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [videoNotes, setVideoNotes] = useState<VideoNoteSummary[]>([]);
   const notesContainerRef = useRef<HTMLDivElement>(null);
 
@@ -156,22 +157,14 @@ function ChatBox({ playerRef }: ChatBoxProps) {
   const menuTitle = isAuthenticated ? "My Collection" : "Local History";
 
   return (
-    <div className="flex flex-col h-full bg-card rounded-xl overflow-hidden shadow-sm border border-border/40">
-      <div className="flex justify-between items-center px-4 py-3 border-b border-border/40 bg-muted/30">
+    <div className="flex h-full min-h-0 w-full flex-col overflow-hidden rounded-[24px] bg-card">
+      <div className="flex shrink-0 items-center justify-between border-b border-border/40 bg-muted/30 px-4 py-3">
         <div className="flex flex-col">
           <h2 className="text-lg font-bold text-foreground tracking-tight">Notes</h2>
           <span className="text-[10px] text-muted-foreground uppercase tracking-widest font-medium">
             {notes.length} observations
           </span>
         </div>
-        <Button 
-          variant="ghost" 
-          size="icon" 
-          onClick={() => setIsMenuOpen(true)}
-          className="hover:bg-accent/80 transition-colors"
-        >
-          <Menu className="h-5 w-5" />
-        </Button>
       </div>
 
       {/* Side Menu with Framer Motion */}
@@ -182,7 +175,7 @@ function ChatBox({ playerRef }: ChatBoxProps) {
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
-              onClick={() => setIsMenuOpen(false)}
+              onClick={() => onMenuOpenChange(false)}
               className="fixed inset-0 bg-black/60 backdrop-blur-sm z-40"
             />
             <motion.div
@@ -197,7 +190,7 @@ function ChatBox({ playerRef }: ChatBoxProps) {
                 <Button
                   variant="ghost"
                   size="icon"
-                  onClick={() => setIsMenuOpen(false)}
+                  onClick={() => onMenuOpenChange(false)}
                   className="rounded-full"
                 >
                   <X className="h-5 w-5" />
@@ -240,7 +233,7 @@ function ChatBox({ playerRef }: ChatBoxProps) {
                         <Link
                           key={video.videoId}
                           to={`/video/${video.videoId}`}
-                          onClick={() => setIsMenuOpen(false)}
+                          onClick={() => onMenuOpenChange(false)}
                           className="flex items-center justify-between p-3 rounded-lg hover:bg-accent/50 transition-colors border border-transparent hover:border-border/40"
                         >
                           <div className="flex items-center space-x-3">
@@ -267,7 +260,7 @@ function ChatBox({ playerRef }: ChatBoxProps) {
 
       <div 
         ref={notesContainerRef} 
-        className="flex-grow overflow-y-auto px-2 py-2 space-y-1 scroll-smooth scrollbar-thin scrollbar-thumb-border"
+        className="min-h-0 flex-1 overflow-y-auto px-2 py-2 space-y-1 scroll-smooth scrollbar-thin scrollbar-thumb-border"
       >
         <AnimatePresence initial={false}>
           {notes.map((note) => {
@@ -365,7 +358,7 @@ function ChatBox({ playerRef }: ChatBoxProps) {
         )}
       </div>
 
-      <div className="p-4 border-t border-border/40 bg-muted/10">
+      <div className="shrink-0 border-t border-border/40 bg-muted/10 p-4">
         <form
           onSubmit={(e: FormEvent<HTMLFormElement>): void => {
             e.preventDefault();

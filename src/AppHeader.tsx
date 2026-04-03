@@ -1,6 +1,6 @@
 import { useRef, useState, type ChangeEvent, type FormEvent } from "react";
 import { Link } from "react-router-dom";
-import { Menu, Search, Sparkles } from "lucide-react";
+import { Menu, Search } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "./contexts/useAuth";
 
@@ -56,8 +56,12 @@ function AppHeader({
             to="/"
             className="group flex h-9 items-center gap-2 rounded-full border border-white/10 bg-white/5 px-2 py-1 backdrop-blur-xl transition-colors hover:border-white/20 hover:bg-white/10"
           >
-            <div className="flex h-7 w-7 items-center justify-center rounded-full bg-white text-slate-950 shadow-sm">
-              <Sparkles className="h-3 w-3" />
+            <div className="flex h-7 w-7 items-center justify-center overflow-hidden rounded-full bg-white/5 shadow-sm">
+              <img
+                src="/scroll_icon_main.png"
+                alt=""
+                className="h-6 w-6 object-contain"
+              />
             </div>
             <div className="min-w-0 text-sm font-semibold text-white">{title}</div>
           </Link>

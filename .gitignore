@@ -1,4 +1,5 @@
 mine/
+.codex
 *.priv.md
 *.md
 *.vim

@@ -5,7 +5,6 @@ import { Button } from "@/components/ui/button";
 import { useAuth } from "./contexts/useAuth";
 
 interface AppHeaderProps {
-  eyebrow?: string;
   title?: string;
   detail?: string;
   onOpenMenu?: () => void;
@@ -15,7 +14,6 @@ interface AppHeaderProps {
 }
 
 function AppHeader({
-  eyebrow = "Precision video notes",
   title = "Scribe",
   detail,
   onOpenMenu,

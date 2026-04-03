@@ -82,7 +82,7 @@ function Home() {
     };
   }, [defaultTitle, vidUrl]);
 
-  const onPlayerReady = (_event: { target: YouTubePlayer }) => {
+  const onPlayerReady = () => {
     setIsPlaying(true); // YouTube starts playing automatically based on our opts
   };
 

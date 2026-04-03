@@ -1,7 +1,6 @@
 import { Link } from "react-router-dom";
 import {
   Home,
-  Layers3,
   NotebookPen,
   Pause,
   Play,

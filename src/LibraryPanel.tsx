@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router";
-import { X } from "lucide-react";
+import { Trash2, X } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { getNoteService } from "./services/noteService";
@@ -21,6 +21,7 @@ interface VideoNoteSummary {
 
 function LibraryPanel({ isOpen, onOpenChange }: LibraryPanelProps) {
   const [videoNotes, setVideoNotes] = useState<VideoNoteSummary[]>([]);
+  const [pendingDelete, setPendingDelete] = useState<VideoNoteSummary | null>(null);
   const { isAuthenticated, user, logout, jwt } = useAuth();
   const noteService = getNoteService(isAuthenticated, jwt);
 
@@ -73,6 +74,20 @@ function LibraryPanel({ isOpen, onOpenChange }: LibraryPanelProps) {
   const handleGoogleLogin = (): void => {
     const apiUrl = import.meta.env.VITE_API_BASE_URL || "http://localhost:8080";
     window.location.href = `${apiUrl}/oauth2/authorization/google`;
+  };
+
+  const handleDeleteVideoHistory = async (videoId: string) => {
+    const allNotes = await noteService.getAllNotes();
+    const notesForVideo = allNotes.filter((note) => note.videoId === videoId);
+
+    await Promise.all(
+      notesForVideo
+        .filter((note) => note.id !== undefined)
+        .map((note) => noteService.deleteNote(note.id!)),
+    );
+
+    setVideoNotes((current) => current.filter((video) => video.videoId !== videoId));
+    setPendingDelete(null);
   };
 
   const menuTitle = isAuthenticated ? "My Collection" : "Local History";
@@ -148,25 +163,38 @@ function LibraryPanel({ isOpen, onOpenChange }: LibraryPanelProps) {
                     <p className="px-2 text-sm italic text-muted-foreground">No videos saved yet.</p>
                   ) : (
                     videoNotes.map((video) => (
-                      <Link
+                      <div
                         key={video.videoId}
-                        to={`/video/${video.videoId}`}
-                        onClick={() => onOpenChange(false)}
-                        className="flex items-center justify-between rounded-lg border border-transparent p-3 transition-colors hover:border-border/40 hover:bg-accent/50"
+                        className="flex items-center gap-2 rounded-lg border border-transparent p-2 transition-colors hover:border-border/40 hover:bg-accent/50"
                       >
-                        <div className="flex items-center space-x-3 overflow-hidden">
-                          <div className="h-2 w-2 shrink-0 rounded-full bg-primary/40" />
-                          <div className="min-w-0">
-                            <div className="truncate text-sm font-medium">{video.title}</div>
-                            <div className="truncate text-[10px] uppercase tracking-[0.18em] text-muted-foreground">
-                              {video.videoId}
+                        <Link
+                          to={`/video/${video.videoId}`}
+                          onClick={() => onOpenChange(false)}
+                          className="flex min-w-0 flex-1 items-center justify-between rounded-md p-1"
+                        >
+                          <div className="flex items-center space-x-3 overflow-hidden">
+                            <div className="h-2 w-2 shrink-0 rounded-full bg-primary/40" />
+                            <div className="min-w-0">
+                              <div className="truncate text-sm font-medium">{video.title}</div>
+                              <div className="truncate text-[10px] uppercase tracking-[0.18em] text-muted-foreground">
+                                {video.videoId}
+                              </div>
                             </div>
                           </div>
-                        </div>
-                        <span className="rounded-full bg-muted px-2 py-0.5 text-[10px] font-bold text-muted-foreground">
-                          {video.noteCount}
-                        </span>
-                      </Link>
+                          <span className="ml-2 shrink-0 rounded-full bg-muted px-2 py-0.5 text-[10px] font-bold text-muted-foreground">
+                            {video.noteCount}
+                          </span>
+                        </Link>
+                        <Button
+                          type="button"
+                          variant="ghost"
+                          size="icon"
+                          onClick={() => setPendingDelete(video)}
+                          className="h-8 w-8 shrink-0 rounded-full text-muted-foreground hover:bg-destructive/10 hover:text-destructive"
+                        >
+                          <Trash2 className="h-4 w-4" />
+                        </Button>
+                      </div>
                     ))
                   )}
                 </div>
@@ -178,6 +206,54 @@ function LibraryPanel({ isOpen, onOpenChange }: LibraryPanelProps) {
                 Scribe v1.0
               </p>
             </div>
+
+            <AnimatePresence>
+              {pendingDelete ? (
+                <>
+                  <motion.div
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    exit={{ opacity: 0 }}
+                    className="absolute inset-0 bg-black/45 backdrop-blur-sm"
+                  />
+                  <motion.div
+                    initial={{ opacity: 0, y: 12, scale: 0.98 }}
+                    animate={{ opacity: 1, y: 0, scale: 1 }}
+                    exit={{ opacity: 0, y: 12, scale: 0.98 }}
+                    transition={{ duration: 0.18 }}
+                    className="absolute inset-x-4 bottom-4 rounded-[24px] border border-white/10 bg-slate-950/95 p-5 shadow-2xl"
+                  >
+                    <div className="text-[10px] font-semibold uppercase tracking-[0.24em] text-slate-500">
+                      Confirm deletion
+                    </div>
+                    <h4 className="mt-2 text-base font-semibold text-white">
+                      Delete this history entry?
+                    </h4>
+                    <p className="mt-2 text-sm leading-relaxed text-slate-400">
+                      This will remove all saved notes for{" "}
+                      <span className="text-slate-200">{pendingDelete.title}</span>.
+                    </p>
+                    <div className="mt-4 flex items-center justify-end gap-2">
+                      <Button
+                        type="button"
+                        variant="ghost"
+                        onClick={() => setPendingDelete(null)}
+                        className="rounded-full border border-white/10 bg-white/5 px-4 text-slate-200 hover:bg-white/10 hover:text-white"
+                      >
+                        Cancel
+                      </Button>
+                      <Button
+                        type="button"
+                        onClick={() => void handleDeleteVideoHistory(pendingDelete.videoId)}
+                        className="rounded-full bg-destructive px-4 text-white hover:bg-destructive/90"
+                      >
+                        Delete
+                      </Button>
+                    </div>
+                  </motion.div>
+                </>
+              ) : null}
+            </AnimatePresence>
           </motion.aside>
         </>
       )}

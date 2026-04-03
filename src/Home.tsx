@@ -6,11 +6,12 @@ import { useNavigate, useParams } from 'react-router';
 import { type YouTubePlayer } from 'react-youtube';
 import { motion } from 'framer-motion';
 import AppHeader from './AppHeader';
+import LibraryPanel from './LibraryPanel';
 import WorkspaceSidebar from './WorkspaceSidebar';
 
 function Home() {
   const playerRef = useRef<YouTubePlayer | null>(null);
-  const playerFrameRef = useRef<HTMLDivElement | null>(null);
+  const playerCardRef = useRef<HTMLElement | null>(null);
   const navigate = useNavigate();
   const params = useParams();
   const vidUrl = params.videoUrl || '';
@@ -22,12 +23,12 @@ function Home() {
   const [headerLinkValue, setHeaderLinkValue] = useState('');
 
   useEffect(() => {
-    const frame = playerFrameRef.current;
-    if (!frame) return;
+    const card = playerCardRef.current;
+    if (!card) return;
 
     const updateHeight = () => {
       const isDesktop = window.innerWidth >= 1024;
-      setPlayerHeight(isDesktop ? frame.getBoundingClientRect().height : null);
+      setPlayerHeight(isDesktop ? card.getBoundingClientRect().height : null);
     };
 
     updateHeight();
@@ -36,7 +37,7 @@ function Home() {
       updateHeight();
     });
 
-    observer.observe(frame);
+    observer.observe(card);
     window.addEventListener('resize', updateHeight);
 
     return () => {
@@ -122,6 +123,10 @@ function Home() {
           onSearchSubmit={handleHeaderSearchSubmit}
           onOpenMenu={() => setIsMenuOpen(true)}
         />
+        <LibraryPanel
+          isOpen={isMenuOpen}
+          onOpenChange={setIsMenuOpen}
+        />
         <div className="flex w-full flex-1 gap-3 px-3 pb-3 md:px-4 md:pb-4">
           <WorkspaceSidebar
             videoId={vidUrl}
@@ -138,9 +143,11 @@ function Home() {
 
           <div className="flex min-h-0 flex-1 flex-col gap-3 lg:items-stretch lg:flex-row">
             <div className="flex min-h-0 flex-1 flex-col gap-3 lg:basis-[70%]">
-              <section className="rounded-[28px] border border-white/10 bg-black/18 p-1 backdrop-blur-xl">
+              <section
+                ref={playerCardRef}
+                className="rounded-[28px] border border-white/10 bg-black/18 p-1 backdrop-blur-xl"
+              >
                 <div
-                  ref={playerFrameRef}
                   className="relative w-full overflow-hidden rounded-[24px]"
                   style={{ aspectRatio: '16 / 9' }}
                 >
@@ -154,14 +161,10 @@ function Home() {
               animate={{ x: 0, opacity: 1 }}
               transition={{ delay: 0.4, duration: 0.6 }}
               className="flex min-h-0 w-full flex-col lg:basis-[30%] lg:self-stretch xl:max-w-[420px]"
-              style={playerHeight ? { height: `${playerHeight + 8}px` } : undefined}
+              style={playerHeight ? { height: `${playerHeight}px` } : undefined}
             >
               <div className="flex min-h-0 flex-1 rounded-[28px] border border-white/10 bg-slate-900/80 p-3 backdrop-blur-2xl">
-                <ChatBox
-                  playerRef={playerRef}
-                  isMenuOpen={isMenuOpen}
-                  onMenuOpenChange={setIsMenuOpen}
-                />
+                <ChatBox playerRef={playerRef} />
               </div>
             </motion.div>
           </div>

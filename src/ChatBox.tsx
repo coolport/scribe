@@ -1,7 +1,7 @@
 import { getNoteService } from "./services/noteService";
 import { type Note } from "./services/noteContract";
-import { useParams, Link } from "react-router";
-import { X, ChevronRight, Trash2, Edit3, Save, RotateCcw } from "lucide-react";
+import { useParams } from "react-router";
+import { ChevronRight, Trash2, Edit3, Save, RotateCcw } from "lucide-react";
 import { type YouTubePlayer } from "react-youtube";
 import { useAuth } from "./contexts/useAuth";
 import formatTime from "./utils/format-time";
@@ -21,27 +21,19 @@ import { motion, AnimatePresence } from "framer-motion";
 
 interface ChatBoxProps {
   playerRef: RefObject<YouTubePlayer | null>;
-  isMenuOpen: boolean;
-  onMenuOpenChange: (open: boolean) => void;
 }
 
-interface VideoNoteSummary {
-  videoId: string;
-  noteCount: number;
-}
-
-function ChatBox({ playerRef, isMenuOpen, onMenuOpenChange }: ChatBoxProps) {
+function ChatBox({ playerRef }: ChatBoxProps) {
   const [notes, setNotes] = useState<Note[]>([]);
   const [userNoteString, setUserNoteString] = useState<string>("");
   const [editingNoteId, setEditingNoteId] = useState<number | null>(null);
   const [editingContent, setEditingContent] = useState<string>("");
-  const [videoNotes, setVideoNotes] = useState<VideoNoteSummary[]>([]);
   const notesContainerRef = useRef<HTMLDivElement>(null);
 
   const params = useParams();
   const rawVidId = params.videoUrl || "";
   const vidId = extractYouTubeDetails(rawVidId) || rawVidId;
-  const { isAuthenticated, user, logout, jwt } = useAuth();
+  const { isAuthenticated, jwt } = useAuth();
 
   const noteService = getNoteService(isAuthenticated, jwt);
 
@@ -52,31 +44,6 @@ function ChatBox({ playerRef, isMenuOpen, onMenuOpenChange }: ChatBoxProps) {
     };
     fetchNotes();
   }, [vidId, noteService]);
-
-  useEffect(() => {
-    const fetchVideoNotes = async () => {
-      const allNotes = await noteService.getAllNotes();
-      const notesByVideo = allNotes.reduce(
-        (acc, note) => {
-          acc[note.videoId] = (acc[note.videoId] || 0) + 1;
-          return acc;
-        },
-        {} as Record<string, number>,
-      );
-
-      const summaries: VideoNoteSummary[] = Object.entries(notesByVideo).map(
-        ([videoId, noteCount]) => ({
-          videoId,
-          noteCount,
-        }),
-      );
-      setVideoNotes(summaries);
-    };
-
-    if (isMenuOpen) {
-      fetchVideoNotes();
-    }
-  }, [isMenuOpen, noteService]);
 
   const handleSubmit = async (): Promise<void> => {
     if (userNoteString.trim()) {
@@ -149,13 +116,6 @@ function ChatBox({ playerRef, isMenuOpen, onMenuOpenChange }: ChatBoxProps) {
     }
   };
 
-  const handleGoogleLogin = (): void => {
-    const apiUrl = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8080';
-    window.location.href = `${apiUrl}/oauth2/authorization/google`;
-  };
-
-  const menuTitle = isAuthenticated ? "My Collection" : "Local History";
-
   return (
     <div className="flex h-full min-h-0 w-full flex-col overflow-hidden rounded-[24px] bg-card">
       <div className="flex shrink-0 items-center justify-between border-b border-border/40 bg-muted/30 px-4 py-3">
@@ -166,97 +126,6 @@ function ChatBox({ playerRef, isMenuOpen, onMenuOpenChange }: ChatBoxProps) {
           </span>
         </div>
       </div>
-
-      {/* Side Menu with Framer Motion */}
-      <AnimatePresence>
-        {isMenuOpen && (
-          <>
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              onClick={() => onMenuOpenChange(false)}
-              className="fixed inset-0 bg-black/60 backdrop-blur-sm z-40"
-            />
-            <motion.div
-              initial={{ x: "100%" }}
-              animate={{ x: 0 }}
-              exit={{ x: "100%" }}
-              transition={{ type: "spring", damping: 25, stiffness: 200 }}
-              className="fixed top-0 right-0 h-full w-[85%] max-w-sm bg-background z-50 shadow-2xl flex flex-col"
-            >
-              <div className="flex justify-between items-center p-6 border-b border-border/40">
-                <h3 className="text-xl font-bold tracking-tight">Library</h3>
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  onClick={() => onMenuOpenChange(false)}
-                  className="rounded-full"
-                >
-                  <X className="h-5 w-5" />
-                </Button>
-              </div>
-              
-              <div className="flex-grow overflow-y-auto p-6 space-y-8">
-                <section>
-                  <h4 className="text-xs font-bold text-muted-foreground uppercase tracking-widest mb-4">Account</h4>
-                  <div className="bg-muted/30 rounded-xl p-4 border border-border/40">
-                    {isAuthenticated ? (
-                      <div className="space-y-4">
-                        <div className="flex items-center space-x-3">
-                          <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center text-primary font-bold">
-                            {user?.name?.[0] || user?.email?.[0] || "?"}
-                          </div>
-                          <div className="overflow-hidden">
-                            <p className="font-semibold truncate">{user?.name || "User"}</p>
-                            <p className="text-xs text-muted-foreground truncate">{user?.email}</p>
-                          </div>
-                        </div>
-                        <Button variant="outline" className="w-full text-xs h-8" onClick={logout}>Sign Out</Button>
-                      </div>
-                    ) : (
-                      <div className="space-y-3">
-                        <p className="text-sm text-muted-foreground">Sync your notes across devices.</p>
-                        <Button className="w-full text-xs h-9" onClick={handleGoogleLogin}>Continue with Google</Button>
-                      </div>
-                    )}
-                  </div>
-                </section>
-
-                <section>
-                  <h4 className="text-xs font-bold text-muted-foreground uppercase tracking-widest mb-4">{menuTitle}</h4>
-                  <div className="space-y-2">
-                    {videoNotes.length === 0 ? (
-                      <p className="text-sm text-muted-foreground italic px-2">No videos saved yet.</p>
-                    ) : (
-                      videoNotes.map((video) => (
-                        <Link
-                          key={video.videoId}
-                          to={`/video/${video.videoId}`}
-                          onClick={() => onMenuOpenChange(false)}
-                          className="flex items-center justify-between p-3 rounded-lg hover:bg-accent/50 transition-colors border border-transparent hover:border-border/40"
-                        >
-                          <div className="flex items-center space-x-3">
-                            <div className="w-2 h-2 rounded-full bg-primary/40" />
-                            <span className="text-sm font-medium">{video.videoId}</span>
-                          </div>
-                          <span className="text-[10px] font-bold bg-muted px-2 py-0.5 rounded-full text-muted-foreground">
-                            {video.noteCount}
-                          </span>
-                        </Link>
-                      ))
-                    )}
-                  </div>
-                </section>
-              </div>
-
-              <div className="p-6 border-t border-border/40 bg-muted/10">
-                <p className="text-[10px] text-center text-muted-foreground uppercase tracking-[0.2em]">Scribe v1.0</p>
-              </div>
-            </motion.div>
-          </>
-        )}
-      </AnimatePresence>
 
       <div 
         ref={notesContainerRef} 

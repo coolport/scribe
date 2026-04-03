@@ -108,45 +108,51 @@ function LibraryPanel({ isOpen, onOpenChange }: LibraryPanelProps) {
             animate={{ x: 0 }}
             exit={{ x: "100%" }}
             transition={{ type: "spring", damping: 25, stiffness: 200 }}
-            className="fixed top-0 right-0 z-50 flex h-full w-[85%] max-w-sm flex-col bg-background shadow-2xl"
+            className="fixed top-0 right-0 z-50 flex h-full w-[85%] max-w-sm flex-col border-l border-white/10 bg-slate-950/95 shadow-2xl backdrop-blur-2xl"
           >
-            <div className="flex items-center justify-between border-b border-border/40 p-6">
-              <h3 className="text-xl font-bold tracking-tight">Library</h3>
-              <Button
-                variant="ghost"
-                size="icon"
-                onClick={() => onOpenChange(false)}
-                className="rounded-full"
-              >
-                <X className="h-5 w-5" />
-              </Button>
+            <div className="border-b border-white/10 bg-white/[0.03] p-6">
+              <div className="flex items-center justify-between">
+                <h3 className="text-xl font-bold tracking-tight text-white">Library</h3>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  onClick={() => onOpenChange(false)}
+                  className="rounded-full border border-white/10 bg-white/5 text-slate-300 hover:bg-white/10 hover:text-white"
+                >
+                  <X className="h-5 w-5" />
+                </Button>
+              </div>
             </div>
 
             <div className="flex-grow space-y-8 overflow-y-auto p-6">
               <section>
-                <h4 className="mb-4 text-xs font-bold uppercase tracking-widest text-muted-foreground">
+                <h4 className="mb-4 text-xs font-bold uppercase tracking-[0.22em] text-slate-500">
                   Account
                 </h4>
-                <div className="rounded-xl border border-border/40 bg-muted/30 p-4">
+                <div className="rounded-[22px] border border-white/10 bg-white/[0.04] p-4 shadow-[inset_0_1px_0_rgba(255,255,255,0.04)]">
                   {isAuthenticated ? (
                     <div className="space-y-4">
                       <div className="flex items-center space-x-3">
-                        <div className="flex h-10 w-10 items-center justify-center rounded-full bg-primary/10 font-bold text-primary">
+                        <div className="flex h-10 w-10 items-center justify-center rounded-full border border-white/10 bg-white/10 font-bold text-white">
                           {user?.name?.[0] || user?.email?.[0] || "?"}
                         </div>
                         <div className="overflow-hidden">
-                          <p className="truncate font-semibold">{user?.name || "User"}</p>
-                          <p className="truncate text-xs text-muted-foreground">{user?.email}</p>
+                          <p className="truncate font-semibold text-white">{user?.name || "User"}</p>
+                          <p className="truncate text-xs text-slate-400">{user?.email}</p>
                         </div>
                       </div>
-                      <Button variant="outline" className="h-8 w-full text-xs" onClick={logout}>
+                      <Button
+                        variant="ghost"
+                        className="h-9 w-full rounded-full border border-white/10 bg-white/5 text-xs text-slate-200 hover:bg-white/10 hover:text-white"
+                        onClick={logout}
+                      >
                         Sign Out
                       </Button>
                     </div>
                   ) : (
                     <div className="space-y-3">
-                      <p className="text-sm text-muted-foreground">Sign in to starting syncing notes.</p>
-                      <Button className="h-9 w-full text-xs" onClick={handleGoogleLogin}>
+                      <p className="text-sm text-slate-400">Sign in to start syncing notes across sessions and devices.</p>
+                      <Button className="h-9 w-full rounded-full text-xs" onClick={handleGoogleLogin}>
                         Continue with Google
                       </Button>
                     </div>
@@ -155,33 +161,35 @@ function LibraryPanel({ isOpen, onOpenChange }: LibraryPanelProps) {
               </section>
 
               <section>
-                <h4 className="mb-4 text-xs font-bold uppercase tracking-widest text-muted-foreground">
+                <h4 className="mb-4 text-xs font-bold uppercase tracking-[0.22em] text-slate-500">
                   {menuTitle}
                 </h4>
                 <div className="space-y-2">
                   {videoNotes.length === 0 ? (
-                    <p className="px-2 text-sm italic text-muted-foreground">No videos saved yet.</p>
+                    <div className="rounded-[22px] border border-dashed border-white/10 bg-white/[0.03] px-4 py-6 text-center">
+                      <p className="text-sm italic text-slate-400">No videos saved yet.</p>
+                    </div>
                   ) : (
                     videoNotes.map((video) => (
                       <div
                         key={video.videoId}
-                        className="flex items-center gap-2 rounded-lg border border-transparent p-2 transition-colors hover:border-border/40 hover:bg-accent/50"
+                        className="flex items-center gap-2 rounded-[22px] border border-white/8 bg-white/[0.03] p-2 transition-colors hover:border-white/15 hover:bg-white/[0.06]"
                       >
                         <Link
                           to={`/video/${video.videoId}`}
                           onClick={() => onOpenChange(false)}
-                          className="flex min-w-0 flex-1 items-center justify-between rounded-md p-1"
+                          className="flex min-w-0 flex-1 items-center justify-between rounded-[16px] p-2"
                         >
                           <div className="flex items-center space-x-3 overflow-hidden">
-                            <div className="h-2 w-2 shrink-0 rounded-full bg-primary/40" />
+                            <div className="h-2 w-2 shrink-0 rounded-full bg-white/40" />
                             <div className="min-w-0">
-                              <div className="truncate text-sm font-medium">{video.title}</div>
-                              <div className="truncate text-[10px] uppercase tracking-[0.18em] text-muted-foreground">
+                              <div className="truncate text-sm font-medium text-white">{video.title}</div>
+                              <div className="truncate text-[10px] uppercase tracking-[0.18em] text-slate-500">
                                 {video.videoId}
                               </div>
                             </div>
                           </div>
-                          <span className="ml-2 shrink-0 rounded-full bg-muted px-2 py-0.5 text-[10px] font-bold text-muted-foreground">
+                          <span className="ml-2 shrink-0 rounded-full border border-white/10 bg-white/5 px-2 py-0.5 text-[10px] font-bold text-slate-300">
                             {video.noteCount}
                           </span>
                         </Link>
@@ -190,7 +198,7 @@ function LibraryPanel({ isOpen, onOpenChange }: LibraryPanelProps) {
                           variant="ghost"
                           size="icon"
                           onClick={() => setPendingDelete(video)}
-                          className="h-8 w-8 shrink-0 rounded-full text-muted-foreground hover:bg-destructive/10 hover:text-destructive"
+                          className="h-8 w-8 shrink-0 rounded-full border border-transparent text-slate-500 hover:border-destructive/20 hover:bg-destructive/10 hover:text-destructive"
                         >
                           <Trash2 className="h-4 w-4" />
                         </Button>
@@ -201,10 +209,11 @@ function LibraryPanel({ isOpen, onOpenChange }: LibraryPanelProps) {
               </section>
             </div>
 
-            <div className="border-t border-border/40 bg-muted/10 p-6">
-              <p className="text-center text-[10px] uppercase tracking-[0.2em] text-muted-foreground">
-                Scribe v1.0
-              </p>
+            <div className="border-t border-white/10 bg-white/[0.03] p-6">
+              <div className="flex items-center justify-between text-[10px] uppercase tracking-[0.22em] text-slate-500">
+                <span>Scribe</span>
+                <span>Library View</span>
+              </div>
             </div>
 
             <AnimatePresence>

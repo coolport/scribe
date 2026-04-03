@@ -51,11 +51,16 @@ function Landing() {
 
       {/* Hero Content */}
       <div className="relative z-10 flex h-full flex-col">
-        <div className="mx-auto w-full max-w-6xl">
+        <motion.div
+          initial={{ opacity: 0, y: -12 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 1.1, delay: 1, ease: [0.22, 1, 0.36, 1] }}
+          className="mx-auto w-full max-w-6xl"
+        >
           <AppHeader title="Scribe - Paste, Play, Annotate" />
-        </div>
+        </motion.div>
         <div className="flex h-full flex-col items-center px-4">
-        <div className="flex-[1.5] flex flex-col justify-end">
+        <div className="flex-[1] flex flex-col justify-end">
           <motion.div
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
@@ -63,7 +68,7 @@ function Landing() {
               duration: 1.2,
               ease: [0.22, 1, 0.36, 1],
             }}
-            className="text-center mb-12"
+            className="mb-7 text-center"
           >
             <motion.h1
               initial={{ opacity: 0, scale: 0.9 }}
@@ -80,7 +85,7 @@ function Landing() {
             <motion.p
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
-              transition={{ duration: 1.2, delay: 1 }}
+              transition={{ duration: 1.1, delay: 1, ease: [0.22, 1, 0.36, 1] }}
               className="text-lg md:text-2xl text-slate-400 font-sans tracking-[0.2em] uppercase font-light"
             >
               The Modern Annotator
@@ -91,18 +96,18 @@ function Landing() {
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 1, delay: 1.5 }}
-          className="w-full max-w-2xl px-6 md:px-0 mb-20"
+          transition={{ duration: 1.1, delay: 1, ease: [0.22, 1, 0.36, 1] }}
+          className="mb-12 w-full max-w-2xl px-6 md:px-0"
         >
           <form
             onSubmit={(e) => {
               e.preventDefault();
               handleSubmit();
             }}
-            className="group relative"
+            className="group relative overflow-hidden rounded-[28px] border border-white/10 bg-white/[0.03] p-1.5 backdrop-blur-xl transition-colors duration-300 focus-within:border-white/15"
           >
             <Input
-              className="w-full bg-transparent text-center text-white text-base md:text-lg px-8 py-8 border-0 border-b-2 border-slate-700/50 focus:border-slate-400 transition-all duration-700 ease-out focus-visible:ring-0 focus:outline-none shadow-none placeholder:text-slate-700 focus:placeholder:text-slate-800"
+              className="relative z-10 h-15 w-full rounded-[22px] border border-white/6 bg-black/5 px-6 text-center text-base text-white shadow-none transition-all duration-300 placeholder:text-slate-600 focus-visible:border-white/10 focus-visible:ring-0 focus:outline-none md:h-[68px] md:px-8 md:text-lg"
               placeholder="Paste your YouTube link here"
               value={formValue ?? ""}
               onChange={(e: ChangeEvent<HTMLInputElement>): void => {
@@ -111,10 +116,10 @@ function Landing() {
               }}
               onKeyDown={handleKeyDown}
             />
-            <div className="absolute bottom-0 left-1/2 -translate-x-1/2 h-[2px] w-0 bg-gradient-to-r from-transparent via-white to-transparent transition-all duration-1000 ease-out group-focus-within:w-full" />
+            <div className="pointer-events-none absolute inset-x-12 bottom-1.5 h-px scale-x-0 bg-gradient-to-r from-transparent via-white/70 to-transparent opacity-0 transition-all duration-700 ease-out group-focus-within:scale-x-100 group-focus-within:opacity-100" />
           </form>
-          <p className="mt-4 text-[10px] text-center text-slate-600 uppercase tracking-widest font-bold">
-            Supports Videos & Shorts
+          <p className="mt-4 text-center text-[10px] font-bold uppercase tracking-[0.24em] text-slate-600">
+            Supports Videos, Shorts, and direct share links
           </p>
         </motion.div>
 
@@ -124,7 +129,7 @@ function Landing() {
         <motion.footer
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
-          transition={{ delay: 2.5, duration: 1.5 }}
+          transition={{ delay: 1, duration: 1.1, ease: [0.22, 1, 0.36, 1] }}
           className="w-full max-w-6xl pb-12 pt-8 border-t border-slate-900 flex flex-col md:flex-row items-center justify-between gap-6"
         >
           <div className="flex items-center space-x-6 text-[10px] text-slate-500 font-bold uppercase tracking-widest">

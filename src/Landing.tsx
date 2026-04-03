@@ -12,6 +12,7 @@ import { Github, Globe, Shield } from "lucide-react";
 import AppHeader from "./AppHeader";
 
 function Landing() {
+  const defaultTitle = "Scribe | Home";
   const [url, setUrl] = useState<string | null>(null);
   const [formValue, setFormValue] = useState<string | null>(null);
   const navigate = useNavigate();
@@ -21,6 +22,10 @@ function Landing() {
     console.log("Parsed URL: ", finalUrl);
     setUrl(finalUrl);
   };
+
+  useEffect(() => {
+    document.title = defaultTitle;
+  }, [defaultTitle]);
 
   useEffect(() => {
     if (url) {
@@ -47,7 +52,7 @@ function Landing() {
       {/* Hero Content */}
       <div className="relative z-10 flex h-full flex-col">
         <div className="mx-auto w-full max-w-6xl">
-          <AppHeader eyebrow="Precision video notes" title="Scribe" detail="Paste. Play. Annotate." />
+          <AppHeader title="Scribe - Paste, Play, Annotate" />
         </div>
         <div className="flex h-full flex-col items-center px-4">
         <div className="flex-[1.5] flex flex-col justify-end">
@@ -134,12 +139,12 @@ function Landing() {
           </div>
 
           <div className="text-[10px] text-slate-600 font-bold tracking-[0.4em] uppercase">
-            © 2026 Scribe Precision / v1.0.4
+            © 2026 Scribe / v1.0.0
           </div>
 
           <div className="flex items-center space-x-6">
             <a 
-              href="#" 
+              href="https://github.com/coolport/scribe" 
               className="text-slate-500 hover:text-white transition-colors duration-300"
             >
               <Github className="h-4 w-4" />

@@ -1,4 +1,4 @@
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import Player from './Player';
 import ChatBox from './ChatBox';
 import { useParams } from 'react-router';
@@ -9,6 +9,7 @@ import WorkspaceSidebar from './WorkspaceSidebar';
 
 function Home() {
   const playerRef = useRef<YouTubePlayer | null>(null);
+  const playerFrameRef = useRef<HTMLDivElement | null>(null);
   const params = useParams();
   const vidUrl = params.videoUrl || '';
   const displayVideoId = vidUrl.length > 18 ? `${vidUrl.slice(0, 18)}...` : vidUrl;
@@ -16,6 +17,31 @@ function Home() {
   const [isPlaying, setIsPlaying] = useState(false);
   const [playbackRate, setPlaybackRate] = useState(1);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [playerHeight, setPlayerHeight] = useState<number | null>(null);
+
+  useEffect(() => {
+    const frame = playerFrameRef.current;
+    if (!frame) return;
+
+    const updateHeight = () => {
+      const isDesktop = window.innerWidth >= 1024;
+      setPlayerHeight(isDesktop ? frame.getBoundingClientRect().height : null);
+    };
+
+    updateHeight();
+
+    const observer = new ResizeObserver(() => {
+      updateHeight();
+    });
+
+    observer.observe(frame);
+    window.addEventListener('resize', updateHeight);
+
+    return () => {
+      observer.disconnect();
+      window.removeEventListener('resize', updateHeight);
+    };
+  }, []);
 
   const onPlayerReady = (_event: { target: YouTubePlayer }) => {
     setIsPlaying(true); // YouTube starts playing automatically based on our opts
@@ -100,10 +126,14 @@ function Home() {
             onSetPlaybackRate={handleSetPlaybackRate}
           />
 
-          <div className="flex min-h-0 flex-1 flex-col gap-3 lg:flex-row">
+          <div className="flex min-h-0 flex-1 flex-col gap-3 lg:items-stretch lg:flex-row">
             <div className="flex min-h-0 flex-1 flex-col gap-3 lg:basis-[70%]">
               <section className="rounded-[28px] border border-white/10 bg-black/18 p-1 backdrop-blur-xl">
-                <div className="relative w-full overflow-hidden rounded-[24px]" style={{ aspectRatio: '16 / 9' }}>
+                <div
+                  ref={playerFrameRef}
+                  className="relative w-full overflow-hidden rounded-[24px]"
+                  style={{ aspectRatio: '16 / 9' }}
+                >
                   <Player videoId={vidUrl} ref={playerRef} onReady={onPlayerReady} onEnd={onPlayerEnd} />
                 </div>
               </section>
@@ -113,7 +143,8 @@ function Home() {
               initial={{ x: 20, opacity: 0 }}
               animate={{ x: 0, opacity: 1 }}
               transition={{ delay: 0.4, duration: 0.6 }}
-              className="flex min-h-[420px] w-full flex-col lg:basis-[30%] xl:max-w-[420px]"
+              className="flex min-h-0 w-full flex-col lg:basis-[30%] lg:self-stretch xl:max-w-[420px]"
+              style={playerHeight ? { height: `${playerHeight + 8}px` } : undefined}
             >
               <div className="flex min-h-0 flex-1 rounded-[28px] border border-white/10 bg-slate-900/80 p-3 backdrop-blur-2xl">
                 <ChatBox

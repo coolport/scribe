@@ -8,8 +8,10 @@ import { motion } from 'framer-motion';
 import AppHeader from './AppHeader';
 import LibraryPanel from './LibraryPanel';
 import WorkspaceSidebar from './WorkspaceSidebar';
+import { youtubeService } from './services/youtubeService';
 
 function Home() {
+  const defaultTitle = 'Scribe | Save Annotated YouTube Notes';
   const playerRef = useRef<YouTubePlayer | null>(null);
   const playerCardRef = useRef<HTMLElement | null>(null);
   const navigate = useNavigate();
@@ -45,6 +47,40 @@ function Home() {
       window.removeEventListener('resize', updateHeight);
     };
   }, []);
+
+  useEffect(() => {
+    let cancelled = false;
+
+    const updateTitle = async () => {
+      document.title = `Scribe | ${vidUrl}`;
+
+      if (!vidUrl || !import.meta.env.VITE_YOUTUBE_API_KEY) return;
+
+      try {
+        const details = await youtubeService.getVideoDetails(vidUrl);
+        if (cancelled) return;
+
+        if (
+          details.title &&
+          details.title !== 'API Key Missing' &&
+          details.title !== 'Error Loading Video Details'
+        ) {
+          document.title = details.title;
+        }
+      } catch {
+        if (!cancelled) {
+          document.title = `Scribe | ${vidUrl}`;
+        }
+      }
+    };
+
+    updateTitle();
+
+    return () => {
+      cancelled = true;
+      document.title = defaultTitle;
+    };
+  }, [defaultTitle, vidUrl]);
 
   const onPlayerReady = (_event: { target: YouTubePlayer }) => {
     setIsPlaying(true); // YouTube starts playing automatically based on our opts
@@ -130,6 +166,7 @@ function Home() {
         <div className="flex w-full flex-1 gap-3 px-3 pb-3 md:px-4 md:pb-4">
           <WorkspaceSidebar
             videoId={vidUrl}
+            onOpenLibrary={() => setIsMenuOpen(true)}
             isLooping={isLooping}
             isPlaying={isPlaying}
             playbackRate={playbackRate}

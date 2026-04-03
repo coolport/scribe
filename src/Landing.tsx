@@ -5,7 +5,7 @@ import {
   useEffect,
 } from "react";
 import extractYouTubeDetails from "./utils/extract-id";
-import { useNavigate } from "react-router";
+import { useNavigate } from "react-router-dom";
 import { Input } from "@/components/ui/input";
 import { motion } from "framer-motion";
 import { Github, Globe, Shield } from "lucide-react";

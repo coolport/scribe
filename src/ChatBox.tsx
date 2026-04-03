@@ -1,6 +1,6 @@
 import { getNoteService } from "./services/noteService";
 import { type Note } from "./services/noteContract";
-import { useParams } from "react-router";
+import { useParams } from "react-router-dom";
 import { ChevronRight, Trash2, Edit3, Save, RotateCcw } from "lucide-react";
 import { type YouTubePlayer } from "react-youtube";
 import { useAuth } from "./contexts/useAuth";

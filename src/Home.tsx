@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import Player from './Player';
 import ChatBox from './ChatBox';
 import extractYouTubeDetails from './utils/extract-id';
-import { useNavigate, useParams } from 'react-router';
+import { useNavigate, useParams } from 'react-router-dom';
 import { type YouTubePlayer } from 'react-youtube';
 import { motion } from 'framer-motion';
 import AppHeader from './AppHeader';

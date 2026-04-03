@@ -162,7 +162,7 @@ function ChatBox({ playerRef, isMenuOpen, onMenuOpenChange }: ChatBoxProps) {
         <div className="flex flex-col">
           <h2 className="text-lg font-bold text-foreground tracking-tight">Notes</h2>
           <span className="text-[10px] text-muted-foreground uppercase tracking-widest font-medium">
-            {notes.length} observations
+            {notes.length} annotations
           </span>
         </div>
       </div>

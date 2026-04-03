@@ -29,16 +29,6 @@ function AppHeader({ eyebrow = "Precision video notes", title = "Scribe", detail
         </Link>
 
         <div className="hidden items-center gap-2 md:flex">
-          {onOpenMenu ? (
-            <Button
-              variant="ghost"
-              size="icon"
-              onClick={onOpenMenu}
-              className="h-9 w-9 rounded-full border border-white/10 bg-white/5 text-slate-200 hover:bg-white/10 hover:text-white"
-            >
-              <Menu className="h-4 w-4" />
-            </Button>
-          ) : null}
           {detail ? (
             <div className="rounded-full border border-white/10 bg-white/5 px-3 py-1.5 text-[10px] font-semibold uppercase tracking-[0.24em] text-slate-400">
               {detail}
@@ -64,6 +54,16 @@ function AppHeader({ eyebrow = "Precision video notes", title = "Scribe", detail
               YouTube
             </a>
           </Button>
+          {onOpenMenu ? (
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={onOpenMenu}
+              className="h-9 w-9 rounded-full border border-white/10 bg-white/5 text-slate-200 hover:bg-white/10 hover:text-white"
+            >
+              <Menu className="h-4 w-4" />
+            </Button>
+          ) : null}
         </div>
       </div>
     </header>

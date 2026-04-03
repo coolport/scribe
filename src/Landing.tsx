@@ -9,6 +9,7 @@ import { useNavigate } from "react-router";
 import { Input } from "@/components/ui/input";
 import { motion } from "framer-motion";
 import { Github, Globe, Shield } from "lucide-react";
+import AppHeader from "./AppHeader";
 
 function Landing() {
   const [url, setUrl] = useState<string | null>(null);
@@ -44,7 +45,11 @@ function Landing() {
       </div>
 
       {/* Hero Content */}
-      <div className="relative z-10 flex h-full flex-col items-center px-4">
+      <div className="relative z-10 flex h-full flex-col">
+        <div className="mx-auto w-full max-w-6xl">
+          <AppHeader eyebrow="Precision video notes" title="Scribe" detail="Paste. Play. Annotate." />
+        </div>
+        <div className="flex h-full flex-col items-center px-4">
         <div className="flex-[1.5] flex flex-col justify-end">
           <motion.div
             initial={{ opacity: 0, y: 30 }}
@@ -141,6 +146,7 @@ function Landing() {
             </a>
           </div>
         </motion.footer>
+        </div>
       </div>
     </div>
   );

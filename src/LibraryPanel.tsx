@@ -130,7 +130,7 @@ function LibraryPanel({ isOpen, onOpenChange }: LibraryPanelProps) {
                     </div>
                   ) : (
                     <div className="space-y-3">
-                      <p className="text-sm text-muted-foreground">Sync your notes across devices.</p>
+                      <p className="text-sm text-muted-foreground">Sign in to starting syncing notes.</p>
                       <Button className="h-9 w-full text-xs" onClick={handleGoogleLogin}>
                         Continue with Google
                       </Button>

@@ -146,12 +146,12 @@ function Home() {
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ duration: 0.8 }}
-      className="min-h-screen overflow-hidden bg-slate-950 text-white"
+      className="h-dvh overflow-hidden bg-slate-950 text-white"
     >
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(148,163,184,0.18),transparent_28%),radial-gradient(circle_at_top_right,rgba(59,130,246,0.14),transparent_22%),linear-gradient(180deg,#020617_0%,#0f172a_50%,#020617_100%)]" />
       <div className="absolute inset-0 opacity-40 [background-image:linear-gradient(to_right,rgba(255,255,255,0.04)_1px,transparent_1px),linear-gradient(to_bottom,rgba(255,255,255,0.03)_1px,transparent_1px)] [background-size:48px_48px]" />
 
-      <div className="relative z-10 flex min-h-screen flex-col">
+      <div className="relative z-10 flex h-dvh min-h-0 flex-col">
         <AppHeader
           title="Scribe"
           searchValue={headerLinkValue}
@@ -163,7 +163,7 @@ function Home() {
           isOpen={isMenuOpen}
           onOpenChange={setIsMenuOpen}
         />
-        <div className="flex w-full flex-1 gap-3 px-3 pb-3 md:px-4 md:pb-4">
+        <div className="flex min-h-0 w-full flex-1 gap-3 overflow-hidden px-3 pb-3 md:px-4 md:pb-4">
           <WorkspaceSidebar
             videoId={vidUrl}
             onOpenLibrary={() => setIsMenuOpen(true)}
@@ -178,8 +178,8 @@ function Home() {
             onSetPlaybackRate={handleSetPlaybackRate}
           />
 
-          <div className="flex min-h-0 flex-1 flex-col gap-3 lg:items-stretch lg:flex-row">
-            <div className="flex min-h-0 flex-1 flex-col gap-3 lg:basis-[70%]">
+          <div className="flex min-h-0 flex-1 flex-col gap-3 overflow-hidden lg:items-stretch lg:flex-row">
+            <div className="flex flex-col gap-3 lg:min-h-0 lg:flex-1 lg:basis-[70%]">
               <section
                 ref={playerCardRef}
                 className="rounded-[28px] border border-white/10 bg-black/18 p-1 backdrop-blur-xl"
@@ -197,7 +197,7 @@ function Home() {
               initial={{ x: 20, opacity: 0 }}
               animate={{ x: 0, opacity: 1 }}
               transition={{ delay: 0.4, duration: 0.6 }}
-              className="flex min-h-0 w-full flex-col lg:basis-[30%] lg:self-stretch xl:max-w-[420px]"
+              className="flex min-h-0 flex-1 w-full flex-col overflow-hidden lg:basis-[30%] lg:self-stretch lg:flex-none xl:max-w-[420px]"
               style={playerHeight ? { height: `${playerHeight}px` } : undefined}
             >
               <div className="flex min-h-0 flex-1 rounded-[28px] border border-white/10 bg-slate-900/80 p-3 backdrop-blur-2xl">

@@ -52,7 +52,7 @@ function AppHeader({
         <div className="flex items-center gap-2">
           <Link
             to="/"
-            className="group flex h-9 items-center gap-2 rounded-full border border-white/10 bg-white/5 px-2 py-1 backdrop-blur-xl transition-colors hover:border-white/20 hover:bg-white/10"
+            className="group flex h-9 max-w-[calc(100vw-8.5rem)] items-center gap-2 rounded-full border border-white/10 bg-white/5 px-2 py-1 backdrop-blur-xl transition-colors hover:border-white/20 hover:bg-white/10 md:max-w-none"
           >
             <div className="flex h-7 w-7 items-center justify-center overflow-hidden rounded-full bg-white/5 shadow-sm">
               <img
@@ -61,7 +61,7 @@ function AppHeader({
                 className="h-6 w-6 object-contain"
               />
             </div>
-            <div className="min-w-0 text-sm font-semibold text-white">{title}</div>
+            <div className="min-w-0 truncate text-sm font-semibold text-white">{title}</div>
           </Link>
 
           {onSearchSubmit && onSearchValueChange ? (
@@ -100,18 +100,18 @@ function AppHeader({
           ) : null}
         </div>
 
-        <div className="hidden items-center gap-2 md:flex">
+        <div className="flex items-center gap-2">
           {detail ? (
-            <div className="rounded-full border border-white/10 bg-white/5 px-3 py-1.5 text-[10px] font-semibold uppercase tracking-[0.24em] text-slate-400">
+            <div className="hidden rounded-full border border-white/10 bg-white/5 px-3 py-1.5 text-[10px] font-semibold uppercase tracking-[0.24em] text-slate-400 md:block">
               {detail}
             </div>
           ) : null}
           <Button
             variant="ghost"
             onClick={isAuthenticated ? undefined : handleGoogleLogin}
-            className="h-9 rounded-full border border-white/10 bg-white/5 px-3 text-slate-200 hover:bg-white/10 hover:text-white"
+            className="h-9 rounded-full border border-white/10 bg-white/5 px-2.5 text-slate-200 hover:bg-white/10 hover:text-white md:px-3"
           >
-            <span className="mr-2 flex h-4 w-4 items-center justify-center">
+            <span className="flex h-4 w-4 items-center justify-center md:mr-2">
               <svg viewBox="0 0 24 24" className="h-4 w-4" aria-hidden="true">
                 <path fill="#EA4335" d="M12 10.2v3.9h5.4c-.2 1.2-.9 2.2-1.9 2.9l3.1 2.4c1.8-1.7 2.9-4.1 2.9-7 0-.7-.1-1.4-.2-2H12z" />
                 <path fill="#34A853" d="M12 22c2.6 0 4.8-.9 6.4-2.5l-3.1-2.4c-.9.6-2 .9-3.3.9-2.5 0-4.6-1.7-5.4-3.9l-3.2 2.5C5 19.8 8.2 22 12 22z" />
@@ -119,7 +119,9 @@ function AppHeader({
                 <path fill="#4285F4" d="M12 5.9c1.4 0 2.7.5 3.6 1.4l2.7-2.7C16.8 3.1 14.6 2 12 2 8.2 2 5 4.2 3.4 7.4l3.2 2.5c.8-2.3 2.9-4 5.4-4z" />
               </svg>
             </span>
-            {isAuthenticated ? user?.name || user?.email || "Signed in" : "Sign in"}
+            <span className="hidden md:inline">
+              {isAuthenticated ? user?.name || user?.email || "Signed in" : "Sign in"}
+            </span>
           </Button>
           {onOpenMenu ? (
             <Button

@@ -12,7 +12,6 @@ function Home() {
   const playerFrameRef = useRef<HTMLDivElement | null>(null);
   const params = useParams();
   const vidUrl = params.videoUrl || '';
-  const displayVideoId = vidUrl.length > 18 ? `${vidUrl.slice(0, 18)}...` : vidUrl;
   const [isLooping, setIsLooping] = useState(false);
   const [isPlaying, setIsPlaying] = useState(false);
   const [playbackRate, setPlaybackRate] = useState(1);
@@ -107,9 +106,8 @@ function Home() {
 
       <div className="relative z-10 flex min-h-screen flex-col">
         <AppHeader
-          eyebrow="Precision video notes"
-          title="Scribe Workspace"
-          detail={displayVideoId}
+          eyebrow=""
+          title="Scribe"
           onOpenMenu={() => setIsMenuOpen(true)}
         />
         <div className="flex w-full flex-1 gap-3 px-3 pb-3 md:px-4 md:pb-4">

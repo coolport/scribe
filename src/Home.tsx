@@ -1,7 +1,8 @@
 import { useEffect, useRef, useState } from 'react';
 import Player from './Player';
 import ChatBox from './ChatBox';
-import { useParams } from 'react-router';
+import extractYouTubeDetails from './utils/extract-id';
+import { useNavigate, useParams } from 'react-router';
 import { type YouTubePlayer } from 'react-youtube';
 import { motion } from 'framer-motion';
 import AppHeader from './AppHeader';
@@ -10,6 +11,7 @@ import WorkspaceSidebar from './WorkspaceSidebar';
 function Home() {
   const playerRef = useRef<YouTubePlayer | null>(null);
   const playerFrameRef = useRef<HTMLDivElement | null>(null);
+  const navigate = useNavigate();
   const params = useParams();
   const vidUrl = params.videoUrl || '';
   const [isLooping, setIsLooping] = useState(false);
@@ -17,6 +19,7 @@ function Home() {
   const [playbackRate, setPlaybackRate] = useState(1);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [playerHeight, setPlayerHeight] = useState<number | null>(null);
+  const [headerLinkValue, setHeaderLinkValue] = useState('');
 
   useEffect(() => {
     const frame = playerFrameRef.current;
@@ -92,6 +95,13 @@ function Home() {
     }
   };
 
+  const handleHeaderSearchSubmit = () => {
+    const nextVideoId = extractYouTubeDetails(headerLinkValue);
+    if (!nextVideoId) return;
+    setHeaderLinkValue('');
+    navigate(`/video/${nextVideoId}`);
+  };
+
   const playbackRates = [0.75, 1, 1.25, 1.5, 2];
 
   return (
@@ -108,6 +118,9 @@ function Home() {
         <AppHeader
           eyebrow=""
           title="Scribe"
+          searchValue={headerLinkValue}
+          onSearchValueChange={setHeaderLinkValue}
+          onSearchSubmit={handleHeaderSearchSubmit}
           onOpenMenu={() => setIsMenuOpen(true)}
         />
         <div className="flex w-full flex-1 gap-3 px-3 pb-3 md:px-4 md:pb-4">

@@ -1,6 +1,6 @@
 import { useEffect, useState, type RefObject, useCallback } from "react";
 import { youtubeService } from "./services/youtubeService";
-import YouTube from "react-youtube";
+import { type YouTubePlayer } from "react-youtube";
 import { motion, AnimatePresence } from "framer-motion";
 import { BookOpen, Map } from "lucide-react";
 
@@ -12,7 +12,7 @@ interface Chapter {
 
 interface ChapterBarProps {
   videoId: string;
-  playerRef: RefObject<YouTube>;
+  playerRef: RefObject<YouTubePlayer | null>;
   duration: number;
 }
 
@@ -184,4 +184,3 @@ const ChapterBar = ({ videoId, playerRef, duration }: ChapterBarProps) => {
 };
 
 export default ChapterBar;
-

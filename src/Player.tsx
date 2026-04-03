@@ -1,5 +1,5 @@
 import { useEffect, useState, forwardRef } from "react";
-import YouTube, { type YouTubeProps } from "react-youtube";
+import YouTube, { type YouTubePlayer, type YouTubeProps } from "react-youtube";
 import { motion, AnimatePresence } from "framer-motion";
 import { Loader2, AlertCircle } from "lucide-react";
 
@@ -10,7 +10,7 @@ type PlayerProps = {
   opts?: YouTubeProps['opts'];
 }
 
-const Player = forwardRef<YouTube, PlayerProps>(({ videoId, onReady, onEnd, opts }, ref) => {
+const Player = forwardRef<YouTubePlayer, PlayerProps>(({ videoId, onReady, onEnd, opts }, ref) => {
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [hasError, setHasError] = useState<boolean>(false);
 
@@ -51,7 +51,7 @@ const Player = forwardRef<YouTube, PlayerProps>(({ videoId, onReady, onEnd, opts
   };
 
   return (
-    <div className="relative w-full h-full bg-slate-900 overflow-hidden group">
+    <div className="group relative h-full w-full overflow-hidden rounded-[24px] bg-slate-900">
       <AnimatePresence>
         {isLoading && (
           <motion.div 
@@ -105,7 +105,7 @@ const Player = forwardRef<YouTube, PlayerProps>(({ videoId, onReady, onEnd, opts
             onReady={onPlayerReady}
             onEnd={onEnd}
             onError={onError}
-            className="absolute top-0 left-0 w-full h-full" 
+            className="absolute top-0 left-0 h-full w-full overflow-hidden rounded-[24px] [&>iframe]:h-full [&>iframe]:w-full [&>iframe]:rounded-[24px]" 
           />
         </motion.div>
       ) : (

@@ -2,8 +2,8 @@ import { getNoteService } from "./services/noteService";
 import { type Note } from "./services/noteContract";
 import { useParams, Link } from "react-router";
 import { Menu, X, ChevronRight, Trash2, Edit3, Save, RotateCcw } from "lucide-react";
-import YouTube from "react-youtube";
-import { useAuth } from "./contexts/AuthContext";
+import { type YouTubePlayer } from "react-youtube";
+import { useAuth } from "./contexts/useAuth";
 import formatTime from "./utils/format-time";
 import extractYouTubeDetails from "./utils/extract-id";
 import {
@@ -20,7 +20,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { motion, AnimatePresence } from "framer-motion";
 
 interface ChatBoxProps {
-  playerRef: RefObject<YouTube>;
+  playerRef: RefObject<YouTubePlayer | null>;
 }
 
 interface VideoNoteSummary {

@@ -116,7 +116,6 @@ function Home() {
 
       <div className="relative z-10 flex min-h-screen flex-col">
         <AppHeader
-          eyebrow=""
           title="Scribe"
           searchValue={headerLinkValue}
           onSearchValueChange={setHeaderLinkValue}

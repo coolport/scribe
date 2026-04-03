@@ -47,17 +47,12 @@ function AppHeader({
         <div className="flex items-center gap-2">
           <Link
             to="/"
-            className="group flex items-center gap-2.5 rounded-full border border-white/10 bg-white/5 px-2.5 py-1.5 backdrop-blur-xl transition-colors hover:border-white/20 hover:bg-white/10"
+            className="group flex h-9 items-center gap-2 rounded-full border border-white/10 bg-white/5 px-2 py-1 backdrop-blur-xl transition-colors hover:border-white/20 hover:bg-white/10"
           >
-            <div className="flex h-8 w-8 items-center justify-center rounded-full bg-white text-slate-950 shadow-sm">
-              <Sparkles className="h-3.5 w-3.5" />
+            <div className="flex h-7 w-7 items-center justify-center rounded-full bg-white text-slate-950 shadow-sm">
+              <Sparkles className="h-3 w-3" />
             </div>
-            <div className="min-w-0">
-              <div className="text-[10px] font-semibold uppercase tracking-[0.28em] text-slate-400">
-                {eyebrow}
-              </div>
-              <div className="text-[13px] font-semibold text-white">{title}</div>
-            </div>
+            <div className="min-w-0 text-sm font-semibold text-white">{title}</div>
           </Link>
 
           {onSearchSubmit && onSearchValueChange ? (
@@ -69,7 +64,7 @@ function AppHeader({
               onFocus={cancelSearchClose}
               onBlur={scheduleSearchClose}
               className={`flex items-center overflow-hidden rounded-full border border-white/10 bg-white/5 backdrop-blur-xl transition-all duration-300 ${
-                isSearchOpen ? "w-[320px] px-2 py-1.5" : "w-10 px-0 py-0"
+                isSearchOpen ? "h-9 w-[320px] px-2 py-1" : "h-9 w-9 px-0 py-0"
               }`}
             >
               <Button
@@ -80,7 +75,7 @@ function AppHeader({
                   cancelSearchClose();
                   setIsSearchOpen(true);
                 }}
-                className="h-10 w-10 shrink-0 rounded-full text-slate-200 hover:bg-white/10 hover:text-white"
+                className="h-9 w-9 shrink-0 rounded-full text-slate-200 hover:bg-white/10 hover:text-white"
               >
                 <Search className="h-4 w-4" />
               </Button>

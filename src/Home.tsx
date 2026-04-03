@@ -6,6 +6,7 @@ import { useParams } from 'react-router';
 import { Button } from '@/components/ui/button';
 import { type YouTubePlayer } from 'react-youtube';
 import { motion } from 'framer-motion';
+import AppHeader from './AppHeader';
 import WorkspaceSidebar from './WorkspaceSidebar';
 import { 
   RotateCcw, 
@@ -92,6 +93,7 @@ function Home() {
       <div className="absolute inset-0 opacity-40 [background-image:linear-gradient(to_right,rgba(255,255,255,0.04)_1px,transparent_1px),linear-gradient(to_bottom,rgba(255,255,255,0.03)_1px,transparent_1px)] [background-size:48px_48px]" />
 
       <div className="relative z-10 flex min-h-screen flex-col">
+        <AppHeader eyebrow="Precision video notes" title="Scribe Workspace" detail={displayVideoId} />
         <div className="flex w-full flex-1 gap-3 px-3 pb-3 md:px-4 md:pb-4">
           <WorkspaceSidebar videoId={vidUrl} />
 

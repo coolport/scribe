@@ -60,7 +60,7 @@ function Landing() {
           <AppHeader title="Scribe - Paste, Play, Annotate" />
         </motion.div>
         <div className="flex min-h-0 flex-1 flex-col items-center px-4">
-          <div className="flex-[0.68] flex flex-col justify-end pt-0 md:flex-[0.88] md:pt-0">
+          <div className="flex-[0.40] flex flex-col justify-end pt-0 md:flex-[0.55] md:pt-0">
             <motion.div
               initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
@@ -129,8 +129,8 @@ function Landing() {
             </div>
 
             <div className="flex items-center space-x-6">
-              <a 
-                href="https://github.com/coolport/scribe" 
+              <a
+                href="https://github.com/coolport/scribe"
                 className="text-slate-500 hover:text-white transition-colors duration-300"
               >
                 <Github className="h-4 w-4" />
